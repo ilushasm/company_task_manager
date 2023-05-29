@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}
+  <title>Index</title>
+{% endblock %}
+{% block content %}
+  <h1>Testing form</h1>
+  <ul>
+    <li><a href="{% url "task_manager:position-create" %}">Position</a></li>
+    <li><a href="{% url "task_manager:worker-create" %}">Worker</a></li>
+    <li><a href="{% url "task_manager:task-type-create" %}">TaskType</a></li>
+    <li>Create new Task inside the Project</li>
+    <li><a href="{% url "task_manager:team-create" %}">Team</a></li>
+    <li><a href="{% url "task_manager:project-create" %}">Project</a></li>
+  </ul>
+  <ol>
+    <li><a href="{% url "task_manager:project-list" %}">See all projects</a></li>
+    <li><a href="{% url "task_manager:team-list" %}">See all teams</a></li>
+  </ol>
+{% endblock %}

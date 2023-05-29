@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}
+  <title>{{ project.name }}</title>
+{% endblock %}
+{% block content %}
+  <h1>{{ project.name }}</h1>
+  <h3>Teams on the project</h3>
+  <ul>
+    {% for team in project.team.all %}
+      <li><a href="{{ team.get_absolute_url }}">{{ team.name }}</a></li>
+    {% endfor %}
+  </ul>
+  <br>
+  <h2>Tasks</h2>
+  <a href="{% url "task_manager:task-create" project_id=project.pk %}">Create new task</a>
+  <ol>
+    {% for task in project.tasks.all %}
+      <li>
+        <ul>
+          <li>{{ task.name }}</li>
+          <li>{{ task.description }}</li>
+        </ul>
+      </li>
+    {% endfor %}
+
+  </ol>
+
+
+
+{% endblock %}

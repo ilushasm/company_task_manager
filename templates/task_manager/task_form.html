@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}
+  <title>Task</title>
+{% endblock %}
+{% block content %}
+  <h1>Create new Task</h1>
+  <form action="" method="post" novalidate>
+    {% csrf_token %}
+    {{ form.as_p }}
+
+    <input type="submit" value="Submit">
+  </form>
+  <h5><a href="{% url "task_manager:task-type-create" %}">Create new task type</a></h5>
+{% endblock %}

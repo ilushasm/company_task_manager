@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}
+  <title>Teams list</title>
+{% endblock %}
+{% block content %}
+  <h1>List of Teams</h1>
+
+  {% for team in team_list %}
+    <ul>
+      <li><a href="{{ team.get_absolute_url }}">{{ team.name }}</a></li>
+      <li>{{ team.team_lead }}</li>
+      <li>
+        <ul>
+          {% for member in team.members.all %}
+            <li>{{ member }}</li>
+          {% endfor %}
+
+        </ul>
+      </li>
+    </ul>
+  {% endfor %}
+
+
+{% endblock %}
