@@ -21,11 +21,12 @@ class DateInput(forms.DateInput):
 class TaskForm(forms.ModelForm):
     class Meta:
         model = Task
-        fields = ['name', 'description', 'priority', 'deadline', 'task_type']
+        fields = ["name", "description", "priority", "deadline", "task_type", "is_completed"]
         widgets = {
-            'name': forms.TextInput(attrs={'class': 'form-control'}),
-            'description': forms.Textarea(attrs={'class': 'form-control'}),
-            'priority': forms.Select(attrs={'class': 'form-control'}),
-            'deadline': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
-            'task_type': forms.Select(attrs={'class': 'form-control'}),
+            "name": forms.TextInput(attrs={"class": "form-control"}),
+            "description": forms.Textarea(attrs={"class": "form-control"}),
+            "priority": forms.Select(attrs={"class": "form-control"}),
+            "deadline": forms.DateInput(attrs={"class": "form-control", "type": "date"}),
+            "task_type": forms.Select(attrs={"class": "form-control"}),
+            "is_completed": forms.CheckboxInput()
         }

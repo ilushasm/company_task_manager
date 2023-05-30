@@ -71,10 +71,10 @@ class Project(models.Model):
 
 class Task(models.Model):
     PRIORITY_CHOICES = (
-        ('Urgent', 'Urgent'),
-        ('High', 'High'),
-        ('Normal', 'Normal'),
-        ('Low', 'Low'),
+        (1, "Urgent"),
+        (2, "High"),
+        (3, "Normal"),
+        (4, "Low"),
     )
 
     name = models.CharField(max_length=63)
@@ -85,6 +85,9 @@ class Task(models.Model):
     task_type = models.ForeignKey(TaskType, on_delete=models.CASCADE)
     project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name="tasks")
     assignees = models.ManyToManyField(get_user_model(), related_name="assigned", blank=True)
+
+    # class Meta:
+    #     ordering = ["deadline"]
 
     def __str__(self) -> str:
         return self.name

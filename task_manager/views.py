@@ -40,7 +40,7 @@ class TaskCreateView(generic.CreateView):
     def get_initial(self):
         initial = super().get_initial()
         project = Project.objects.get(id=self.kwargs["project_id"])
-        initial['project'] = project.id
+        initial["project"] = project.id
         return initial
 
     def form_valid(self, form):
@@ -76,3 +76,20 @@ class ProjectListView(generic.ListView):
 
 class ProjectDetailView(generic.DetailView):
     model = Project
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        tasks = self.object.tasks.all()
+
+        sort_by = self.request.GET.get("sort_by")
+
+        if sort_by == "deadline":
+            tasks = tasks.order_by("deadline")
+        elif sort_by == "is_completed":
+            tasks = tasks.order_by("is_completed")
+        elif sort_by == "priority":
+            tasks = tasks.order_by("priority")
+
+        context["tasks"] = tasks
+        return context

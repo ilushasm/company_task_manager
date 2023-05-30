@@ -13,8 +13,19 @@
   <br>
   <h2>Tasks</h2>
   <a href="{% url "task_manager:task-create" project_id=project.pk %}">Create new task</a>
+  <p>
+    <a href="{% url "task_manager:project-detail" pk=project.pk %}?sort_by=deadline">
+      Sort by deadline
+    </a>
+    <a href="{% url "task_manager:project-detail" pk=project.pk %}?sort_by=is_completed">
+      Sort by status
+    </a>
+    <a href="{% url "task_manager:project-detail" pk=project.pk %}?sort_by=priority">
+      Sort by priority
+    </a>
+  </p>
   <ol>
-    {% for task in project.tasks.all %}
+    {% for task in tasks %}
       <li>
         <ul>
           <li>{{ task.name }}</li>
