@@ -1,17 +1,32 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import Group
 
 from task_manager.models import Worker, Task
 
 
 class WorkerCreationForm(UserCreationForm):
+    groups = forms.ModelChoiceField(
+        queryset=Group.objects.all(),
+        widget=forms.RadioSelect,
+        required=True
+    )
+
     class Meta(UserCreationForm.Meta):
         model = Worker
         fields = UserCreationForm.Meta.fields + (
             "first_name",
             "last_name",
             "position",
+            "groups"
         )
+
+    def save(self, commit=True):
+        worker = super().save(commit=False)
+        if commit:
+            worker.save()
+
+        return worker
 
 
 class DateInput(forms.DateInput):

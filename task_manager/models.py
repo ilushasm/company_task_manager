@@ -1,14 +1,11 @@
 from django.contrib.auth import get_user_model
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, Group
 from django.db import models
 from django.urls import reverse
 
 
 class TaskType(models.Model):
     name = models.CharField(max_length=63)
-
-    class Meta:
-        ordering = ["name"]
 
     def __str__(self) -> str:
         return self.name
@@ -17,18 +14,16 @@ class TaskType(models.Model):
 class Position(models.Model):
     name = models.CharField(max_length=63)
 
-    class Meta:
-        ordering = ["name"]
-
     def __str__(self) -> str:
         return self.name
 
 
 class Worker(AbstractUser):
     position = models.ForeignKey(Position, on_delete=models.CASCADE)
+    groups = models.ManyToManyField(Group, default=1)
+    REQUIRED_FIELDS = ["position_id"]
 
     class Meta:
-        ordering = ["username"]
         verbose_name = "worker"
         verbose_name_plural = "workers"
 
@@ -44,9 +39,6 @@ class Team(models.Model):
     name = models.CharField(max_length=63)
     members = models.ManyToManyField(get_user_model(), related_name="teammates")
 
-    class Meta:
-        ordering = ["name"]
-
     def __str__(self) -> str:
         return self.name
 
@@ -58,9 +50,6 @@ class Project(models.Model):
     name = models.CharField(max_length=63)
     description = models.TextField(blank=True)
     team = models.ManyToManyField(Team, related_name="projects", blank=True)
-
-    class Meta:
-        ordering = ["name"]
 
     def __str__(self) -> str:
         return self.name

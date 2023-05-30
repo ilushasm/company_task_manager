@@ -1,3 +1,4 @@
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.shortcuts import render
 from django.urls import reverse_lazy, reverse
 from django.views import generic
@@ -11,26 +12,31 @@ def index(request) -> render:
     return render(request, "task_manager/index.html")
 
 
-class PositionCreateView(generic.CreateView):
+class PositionCreateView(PermissionRequiredMixin, LoginRequiredMixin, generic.CreateView):
     model = Position
+    permission_required = "task_manager.add_position"
+
     fields = "__all__"
     template_name = "task_manager/position_form.html"
     success_url = reverse_lazy("task_manager:index")
 
 
-class WorkerCreateView(generic.CreateView):
+class WorkerCreateView(PermissionRequiredMixin, LoginRequiredMixin, generic.CreateView):
     model = Worker
+    permission_required = "task_manager.add_worker"
     form_class = WorkerCreationForm
 
 
-class WorkerListView(generic.ListView):
+class WorkerListView(PermissionRequiredMixin, LoginRequiredMixin, generic.ListView):
     model = Worker
+    permission_required = "task_manager.view_worker"
     paginate_by = 5
-    queryset = Worker.objects.select_related("position")
+    queryset = Worker.objects.select_related("position").order_by("username")
 
 
-class WorkerDetailView(generic.DetailView):
+class WorkerDetailView(PermissionRequiredMixin, LoginRequiredMixin, generic.DetailView):
     model = Worker
+    permission_required = "task_manager.view_worker"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -41,15 +47,17 @@ class WorkerDetailView(generic.DetailView):
         return context
 
 
-class TaskTypeCreateView(generic.CreateView):
+class TaskTypeCreateView(PermissionRequiredMixin, LoginRequiredMixin, generic.CreateView):
     model = TaskType
+    permission_required = "task_manager.add_tasktype"
     fields = "__all__"
     success_url = reverse_lazy("task_manager:index")
 
 
-class TaskCreateView(generic.CreateView):
+class TaskCreateView(PermissionRequiredMixin, LoginRequiredMixin, generic.CreateView):
     model = Task
     form_class = TaskForm
+    permission_required = "task_manager.add_task"
 
     def get_success_url(self):
         project = Project.objects.get(id=self.kwargs["project_id"])
@@ -69,34 +77,41 @@ class TaskCreateView(generic.CreateView):
         return super().form_valid(form)
 
 
-class TeamCreateView(generic.CreateView):
+class TeamCreateView(PermissionRequiredMixin, LoginRequiredMixin, generic.CreateView):
     model = Team
+    permission_required = "task_manager.add_team"
     fields = "__all__"
     success_url = reverse_lazy("task_manager:index")
 
 
-class TeamListView(generic.ListView):
+class TeamListView(PermissionRequiredMixin, LoginRequiredMixin, generic.ListView):
     model = Team
     paginate_by = 5
+    permission_required = "task_manager.view_team"
 
 
-class TeamDetailView(generic.DetailView):
+class TeamDetailView(PermissionRequiredMixin, LoginRequiredMixin, generic.DetailView):
     model = Team
+    permission_required = "task_manager.view_team"
 
 
-class ProjectCreateView(generic.CreateView):
+class ProjectCreateView(PermissionRequiredMixin, LoginRequiredMixin, generic.CreateView):
     model = Project
+    permission_required = "task_manager.add_project"
     fields = "__all__"
     success_url = reverse_lazy("task_manager:index")
 
 
-class ProjectListView(generic.ListView):
+class ProjectListView(PermissionRequiredMixin, LoginRequiredMixin, generic.ListView):
     model = Project
+    ordering = ["name"]
     paginate_by = 5
+    permission_required = "task_manager.view_project"
 
 
-class ProjectDetailView(generic.DetailView):
+class ProjectDetailView(PermissionRequiredMixin, LoginRequiredMixin, generic.DetailView):
     model = Project
+    permission_required = "task_manager.view_project"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
