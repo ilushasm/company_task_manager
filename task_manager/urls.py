@@ -4,6 +4,8 @@ from task_manager.views import (
     index,
     PositionCreateView,
     WorkerCreateView,
+    WorkerListView,
+    WorkerDetailView,
     TaskTypeCreateView,
     TaskCreateView,
     TeamCreateView,
@@ -25,6 +27,16 @@ urlpatterns = [
         "worker-create/",
         WorkerCreateView.as_view(),
         name="worker-create",
+    ),
+    path(
+        "worker-list/",
+        WorkerListView.as_view(),
+        name="worker-list",
+    ),
+    path(
+        "worker/<int:pk>/",
+        WorkerDetailView.as_view(),
+        name="worker-detail",
     ),
     path(
         "tasktype-create/",

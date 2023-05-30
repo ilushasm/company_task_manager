@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}
+  <title>Worker list</title>
+{% endblock %}
+{% block content %}
+  <h1>List of Workers</h1>
+
+  <ul>
+    {% for worker in worker_list %}
+      <li><a href="{% url "task_manager:worker-detail" pk=worker.pk %}">
+        {{ worker }} ({{ worker.position }})
+      </a></li>
+    {% endfor %}
+  </ul>
+
+{% endblock %}

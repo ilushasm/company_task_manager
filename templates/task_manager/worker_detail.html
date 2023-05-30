@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}
+  <title>{{ worker.username }}</title>
+{% endblock %}
+{% block content %}
+  <h1>{{ worker }}</h1>
+  <h3>{{ worker.position }}</h3>
+  <h5>Assigned tasks</h5>
+  <p>
+    <a href="{% url "task_manager:worker-detail" pk=worker.pk %}?sort_by=deadline">
+      Sort by deadline
+    </a>
+    <a href="{% url "task_manager:worker-detail" pk=worker.pk %}?sort_by=is_completed">
+      Sort by status
+    </a>
+    <a href="{% url "task_manager:worker-detail" pk=worker.pk %}?sort_by=priority">
+      Sort by priority
+    </a>
+  </p>
+  <ul>
+    {% for task in tasks %}
+      <li>{{ task.name }}</li>
+    {% endfor %}
+
+  </ul>
+{% endblock %}

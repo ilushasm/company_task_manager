@@ -23,6 +23,24 @@ class WorkerCreateView(generic.CreateView):
     form_class = WorkerCreationForm
 
 
+class WorkerListView(generic.ListView):
+    model = Worker
+    paginate_by = 5
+    queryset = Worker.objects.select_related("position")
+
+
+class WorkerDetailView(generic.DetailView):
+    model = Worker
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        tasks = Task.objects.filter(assignees__id=self.object.id)
+        sort_by = self.request.GET.get("sort_by")
+        context["tasks"] = Task.sorting(tasks, sort_by)
+
+        return context
+
+
 class TaskTypeCreateView(generic.CreateView):
     model = TaskType
     fields = "__all__"
@@ -35,16 +53,19 @@ class TaskCreateView(generic.CreateView):
 
     def get_success_url(self):
         project = Project.objects.get(id=self.kwargs["project_id"])
+
         return reverse("task_manager:project-detail", kwargs={"pk": project.pk})
 
     def get_initial(self):
         initial = super().get_initial()
         project = Project.objects.get(id=self.kwargs["project_id"])
         initial["project"] = project.id
+
         return initial
 
     def form_valid(self, form):
         form.instance.project = Project.objects.get(id=self.kwargs["project_id"])
+
         return super().form_valid(form)
 
 
@@ -79,17 +100,9 @@ class ProjectDetailView(generic.DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
         tasks = self.object.tasks.all()
-
         sort_by = self.request.GET.get("sort_by")
 
-        if sort_by == "deadline":
-            tasks = tasks.order_by("deadline")
-        elif sort_by == "is_completed":
-            tasks = tasks.order_by("is_completed")
-        elif sort_by == "priority":
-            tasks = tasks.order_by("priority")
+        context["tasks"] = Task.sorting(tasks, sort_by)
 
-        context["tasks"] = tasks
         return context
