@@ -9,9 +9,11 @@
     <div>
       <ul>
         <li><a href="{{ project.get_absolute_url }}">{{ project.name }}</a></li>
-        <li><a href="">{{ project.description }}</a></li>
+        <ul>
+          <li><a href="">{{ project.description }}</a></li>
         <li>
           <ul>
+
             {% for team in project.team.all %}
               <a href="">{{ team.name }}</a>
             {% endfor %}
@@ -19,6 +21,7 @@
           </ul>
         </li>
         <li><a href="">{{ project.tasks.count }}</a></li>
+        </ul>
       </ul>
     </div>
   {% endfor %}

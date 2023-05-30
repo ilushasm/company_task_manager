@@ -1,8 +1,9 @@
 from django.shortcuts import render
-from django.urls import reverse_lazy
-from django.views import generic, View
+from django.urls import reverse_lazy, reverse
+from django.views import generic
 
-from task_manager.forms import WorkerCreationForm, TaskForm, TaskCreateForm
+
+from task_manager.forms import WorkerCreationForm, TaskForm
 from task_manager.models import Position, Worker, TaskType, Task, Team, Project
 
 
@@ -28,21 +29,23 @@ class TaskTypeCreateView(generic.CreateView):
     success_url = reverse_lazy("task_manager:index")
 
 
-class TaskCreateView(View):
-    # model = Task
-    # form_class = TaskForm
-    # success_url = reverse_lazy("task_manager:index")
-    def get(self, request, project_id):
-        form = TaskCreateForm(initial={"project": project_id})
-        return render(request, "task_manager/task_form.html", {"form": form})
+class TaskCreateView(generic.CreateView):
+    model = Task
+    form_class = TaskForm
 
-    def post(self, request, project_id):
-        form = TaskCreateForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return render(request, "task_manager/index.html")
-            # Redirect or do something else
-        return render(request, "task_manager/task_form.html", {"form": form})
+    def get_success_url(self):
+        project = Project.objects.get(id=self.kwargs["project_id"])
+        return reverse("task_manager:project-detail", kwargs={"pk": project.pk})
+
+    def get_initial(self):
+        initial = super().get_initial()
+        project = Project.objects.get(id=self.kwargs["project_id"])
+        initial['project'] = project.id
+        return initial
+
+    def form_valid(self, form):
+        form.instance.project = Project.objects.get(id=self.kwargs["project_id"])
+        return super().form_valid(form)
 
 
 class TeamCreateView(generic.CreateView):

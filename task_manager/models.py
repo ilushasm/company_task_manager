@@ -39,26 +39,6 @@ class Worker(AbstractUser):
         return reverse("task_manager:index")
 
 
-class Task(models.Model):
-    class Priority(models.IntegerChoices):
-        URGENT = 1
-        HIGH = 2
-        NORMAL = 3
-        LOW = 4
-
-    name = models.CharField(max_length=63)
-    description = models.TextField(blank=True)
-    deadline = models.DateField()
-    is_completed = models.BooleanField(default=False)
-    priority = models.IntegerField(choices=Priority.choices)
-    task_type = models.ForeignKey(TaskType, on_delete=models.CASCADE)
-    project = models.ForeignKey("Project", on_delete=models.CASCADE)
-    assignees = models.ManyToManyField(get_user_model(), related_name="assigned", blank=True)
-
-    def __str__(self) -> str:
-        return self.name
-
-
 class Team(models.Model):
     team_lead = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     name = models.CharField(max_length=63)
@@ -77,7 +57,6 @@ class Team(models.Model):
 class Project(models.Model):
     name = models.CharField(max_length=63)
     description = models.TextField(blank=True)
-    # tasks = models.ManyToManyField(Task, related_name="project", blank=True)
     team = models.ManyToManyField(Team, related_name="projects", blank=True)
 
     class Meta:
@@ -88,3 +67,24 @@ class Project(models.Model):
 
     def get_absolute_url(self):
         return reverse("task_manager:project-detail", args=[str(self.id)])
+
+
+class Task(models.Model):
+    PRIORITY_CHOICES = (
+        ('Urgent', 'Urgent'),
+        ('High', 'High'),
+        ('Normal', 'Normal'),
+        ('Low', 'Low'),
+    )
+
+    name = models.CharField(max_length=63)
+    description = models.TextField(blank=True)
+    deadline = models.DateField()
+    is_completed = models.BooleanField(default=False)
+    priority = models.CharField(max_length=255, choices=PRIORITY_CHOICES)
+    task_type = models.ForeignKey(TaskType, on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name="tasks")
+    assignees = models.ManyToManyField(get_user_model(), related_name="assigned", blank=True)
+
+    def __str__(self) -> str:
+        return self.name

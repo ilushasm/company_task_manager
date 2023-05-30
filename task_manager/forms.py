@@ -1,8 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from django.urls import reverse_lazy
 
-from task_manager.models import Worker, TaskType, Task
+from task_manager.models import Worker, Task
 
 
 class WorkerCreationForm(UserCreationForm):
@@ -20,37 +19,13 @@ class DateInput(forms.DateInput):
 
 
 class TaskForm(forms.ModelForm):
-
     class Meta:
         model = Task
-        fields = [
-            "name",
-            "description",
-            "deadline",
-            "is_completed",
-            "priority",
-            "task_type",
-            "assignees"
-        ]
+        fields = ['name', 'description', 'priority', 'deadline', 'task_type']
         widgets = {
-            "deadline": DateInput(),
-        }
-
-
-class TaskCreateForm(forms.ModelForm):
-    class Meta:
-        model = Task
-        fields = [
-            "name",
-            "description",
-            "deadline",
-            "is_completed",
-            "priority",
-            "task_type",
-            "assignees",
-            "project"
-        ]
-        widgets = {
-            'project': forms.HiddenInput(),
-            "deadline": DateInput(),
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'description': forms.Textarea(attrs={'class': 'form-control'}),
+            'priority': forms.Select(attrs={'class': 'form-control'}),
+            'deadline': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'task_type': forms.Select(attrs={'class': 'form-control'}),
         }

@@ -7,7 +7,7 @@
   <form action="" method="post" novalidate>
     {% csrf_token %}
     {{ form.as_p }}
-
+    <input type="hidden" value="{{ task.project_id }}" name="project">
     <input type="submit" value="Submit">
   </form>
   <h5><a href="{% url "task_manager:task-type-create" %}">Create new task type</a></h5>
