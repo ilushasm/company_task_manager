@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load custom_filters %}
 
 {% block title %}
   <title>Teams list</title>
@@ -7,26 +8,17 @@
 {% block content %}
 
   <h1>List of Teams</h1>
-  <a href="{% url "task_manager:team-create" %}">Create new Team</a>
+  {% if user|has_group:"Team Lead Group" %}
+    <a href="{% url "task_manager:team-create" %}">Create new Team</a>
+  {% endif %}
 
-  {% for team in team_list %}
-
-    <ul>
-
-      {% if team_id == team.id or team_id == 0 %}
-        <li><a href="{{ team.get_absolute_url }}">See details</a>{{ team.name }}</li>
-
-        {% else %}
+    {% for team in team_list %}
+      <ul>
         <li>{{ team.name }}</li>
-
-      {% endif %}
-
-      <li>{{ team.team_lead }}</li>
-        <ul>
-          <li>{{ team.members.all|join:", " }}</li>
-        </ul>
-    </ul>
-
-  {% endfor %}
+        <li>Team Lead: {{ team.team_lead }}</li>
+        <li>Team members: {{ team.members.all|join:", " }}</li>
+        <li><a href="{{ team.get_absolute_url }}">See details</a>{{ team.name }}</li>
+      </ul>
+    {% endfor %}
 
 {% endblock %}

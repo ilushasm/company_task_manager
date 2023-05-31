@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load custom_filters %}
 
 {% block title %}
   <title>{{ team.name }}</title>
@@ -7,8 +8,12 @@
 {% block content %}
 
   <h1>{{ team.name }}</h1>
-  <a href="{% url "task_manager:team-update" pk=team.pk %}">Update team</a>
-  <a href="{% url "task_manager:team-delete" pk=team.pk %}">Delete team</a>
+
+  {% if user|has_group:"Team Lead Group" %}
+    <a href="{% url "task_manager:team-update" pk=team.pk %}">Update team</a>
+    <a href="{% url "task_manager:team-delete" pk=team.pk %}">Delete team</a>
+  {% endif %}
+
   <h3>Team-lead: {{ team.team_lead }}</h3>
   <h4>Team members</h4>
 

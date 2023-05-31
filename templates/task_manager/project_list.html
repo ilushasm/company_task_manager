@@ -1,10 +1,15 @@
 {% extends "base.html" %}
+{% load custom_filters %}
+
 {% block title %}
   <title>Project list</title>
 {% endblock %}
+
 {% block content %}
   <h1>List of Projects</h1>
-  <a href="{% url "task_manager:project-create" %}">Create new Project</a>
+  {% if user|has_group:"Team Lead Group" %}
+    <a href="{% url "task_manager:project-create" %}">Create new Project</a>
+  {% endif %}
 
   {% for project in project_list %}
     <div>
@@ -12,16 +17,14 @@
         <li><a href="{{ project.get_absolute_url }}">{{ project.name }}</a></li>
         <ul>
           <li><a href="">{{ project.description }}</a></li>
-        <li>
-          <ul>
-
+          <li><a href="">{{ project.tasks.count }}</a></li>
+          <li>
+          <ol>
             {% for team in project.team.all %}
-              <a href="">{{ team.name }}</a>
+              <li><a href="">{{ team.name }}</a></li>
             {% endfor %}
-
-          </ul>
+          </ol>
         </li>
-        <li><a href="">{{ project.tasks.count }}</a></li>
         </ul>
       </ul>
     </div>

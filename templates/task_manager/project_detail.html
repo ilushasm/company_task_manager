@@ -1,11 +1,19 @@
 {% extends "base.html" %}
+{% load custom_filters %}
+
 {% block title %}
   <title>{{ project.name }}</title>
 {% endblock %}
+
 {% block content %}
+
   <h1>{{ project.name }}</h1>
-  <a href="{% url "task_manager:project-update" pk=project.pk %}">Update project</a>
-  <a href="{% url "task_manager:project-delete" pk=project.pk %}">Delete project</a>
+
+  {% if user|has_group:"Team Lead Group" %}
+    <a href="{% url "task_manager:project-update" pk=project.pk %}">Update project</a>
+    <a href="{% url "task_manager:project-delete" pk=project.pk %}">Delete project</a>
+  {% endif %}
+
   <h3>Teams on the project</h3>
   <ul>
     {% for team in project.team.all %}
@@ -14,7 +22,11 @@
   </ul>
   <br>
   <h2>Tasks</h2>
-  <a href="{% url "task_manager:task-create" project_id=project.pk %}">Create new task</a>
+
+  {% if is_member or user|has_group:"Team Lead Group" %}
+    <a href="{% url "task_manager:task-create" project_id=project.pk %}">Create new task</a>
+  {% endif %}
+
   <p>
     <a href="{% url "task_manager:project-detail" pk=project.pk %}?sort_by=deadline">
       Sort by deadline

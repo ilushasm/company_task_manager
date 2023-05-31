@@ -19,29 +19,28 @@ def index(request) -> HttpResponse:
 class PositionCreateView(PermissionRequiredMixin, LoginRequiredMixin, generic.CreateView):
     model = Position
     permission_required = "task_manager.add_position"
-
-    fields = "__all__"
-    template_name = "task_manager/position_form.html"
-    success_url = reverse_lazy("task_manager:index")
-
-
-# to add PermissionRequiredMixin
-class PositionUpdateView(LoginRequiredMixin, generic.UpdateView):
-    model = Position
     fields = "__all__"
     success_url = reverse_lazy("task_manager:position-list")
 
 
-# to add PermissionRequiredMixin
-class PositionDeleteView(LoginRequiredMixin, generic.DeleteView):
+class PositionUpdateView(PermissionRequiredMixin, LoginRequiredMixin, generic.UpdateView):
     model = Position
+    fields = "__all__"
+    permission_required = "task_manager.change_position"
     success_url = reverse_lazy("task_manager:position-list")
 
 
-# to add PermissionRequiredMixin
-class PositionListView(LoginRequiredMixin, generic.ListView):
+class PositionDeleteView(PermissionRequiredMixin, LoginRequiredMixin, generic.DeleteView):
+    model = Position
+    permission_required = "task_manager.delete_position"
+    success_url = reverse_lazy("task_manager:position-list")
+
+
+class PositionListView(PermissionRequiredMixin, LoginRequiredMixin, generic.ListView):
     model = Position
     paginate_by = 20
+    permission_required = "task_manager.view_position"
+    queryset = Position.objects.all().order_by("name")
 
 
 class WorkerCreateView(PermissionRequiredMixin, LoginRequiredMixin, generic.CreateView):
@@ -81,18 +80,18 @@ class WorkerDetailView(PermissionRequiredMixin, LoginRequiredMixin, generic.Deta
         return context
 
 
-# to add PermissionRequiredMixin
-class WorkerUpdateView(LoginRequiredMixin, generic.UpdateView):
+class WorkerUpdateView(PermissionRequiredMixin, LoginRequiredMixin, generic.UpdateView):
     model = Worker
     fields = ["username", "first_name", "last_name", "position"]
+    permission_required = "task_manager.change_worker"
 
     def get_success_url(self) -> str:
         return reverse("task_manager:worker-detail", kwargs={"pk": self.object.pk})
 
 
-# to add PermissionRequiredMixin
-class WorkerDeleteView(LoginRequiredMixin, generic.DeleteView):
+class WorkerDeleteView(PermissionRequiredMixin, LoginRequiredMixin, generic.DeleteView):
     model = Worker
+    permission_required = "task_manager.delete_worker"
     success_url = reverse_lazy("task_manager:worker-list")
 
 
@@ -100,26 +99,26 @@ class TaskTypeCreateView(PermissionRequiredMixin, LoginRequiredMixin, generic.Cr
     model = TaskType
     permission_required = "task_manager.add_tasktype"
     fields = "__all__"
-    success_url = reverse_lazy("task_manager:index")
+    success_url = reverse_lazy("task_manager:task-type-list")
 
 
-# to add PermissionRequiredMixin
-class TaskTypeUpdateView(LoginRequiredMixin, generic.UpdateView):
+class TaskTypeUpdateView(PermissionRequiredMixin, LoginRequiredMixin, generic.UpdateView):
     model = TaskType
     fields = "__all__"
+    permission_required = "task_manager.change_tasktype"
     success_url = reverse_lazy("task_manager:task-type-list")
 
 
-# to add PermissionRequiredMixin
-class TaskTypeDeleteView(LoginRequiredMixin, generic.DeleteView):
+class TaskTypeDeleteView(PermissionRequiredMixin, LoginRequiredMixin, generic.DeleteView):
     model = TaskType
+    permission_required = "task_manager.delete_tasktype"
     success_url = reverse_lazy("task_manager:task-type-list")
 
 
-# to add PermissionRequiredMixin
-class TaskTypeListView(LoginRequiredMixin, generic.ListView):
+class TaskTypeListView(PermissionRequiredMixin, LoginRequiredMixin, generic.ListView):
     model = TaskType
     paginate_by = 20
+    permission_required = "task_manager.view_tasktype"
 
 
 class TaskCreateView(PermissionRequiredMixin, LoginRequiredMixin, generic.CreateView):
@@ -150,19 +149,18 @@ class TaskCreateView(PermissionRequiredMixin, LoginRequiredMixin, generic.Create
         return super().form_valid(form)
 
 
-# to add PermissionRequiredMixin
-class TaskUpdateView(LoginRequiredMixin, generic.UpdateView):
+class TaskUpdateView(PermissionRequiredMixin, LoginRequiredMixin, generic.UpdateView):
     model = Task
     fields = ["name", "description", "deadline", "priority", "task_type", "assignees"]
+    permission_required = "task_manager.change_task"
 
     def get_success_url(self) -> str:
         return reverse("task_manager:project-detail", kwargs={"pk": self.object.project.pk})
 
 
-# to add PermissionRequiredMixin
-class TaskDeleteView(LoginRequiredMixin, generic.DeleteView):
+class TaskDeleteView(PermissionRequiredMixin, LoginRequiredMixin, generic.DeleteView):
     model = Task
-    # success_url = reverse_lazy("task_manager:position-list")
+    permission_required = "task_manager.delete_task"
 
     def get_success_url(self) -> str:
         return reverse("task_manager:project-detail", kwargs={"pk": self.object.project.pk})
@@ -181,24 +179,14 @@ class TeamCreateView(PermissionRequiredMixin, LoginRequiredMixin, generic.Create
     model = Team
     permission_required = "task_manager.add_team"
     fields = "__all__"
-    success_url = reverse_lazy("task_manager:index")
+    success_url = reverse_lazy("task_manager:team-list")
 
 
 class TeamListView(PermissionRequiredMixin, LoginRequiredMixin, generic.ListView):
     model = Team
     paginate_by = 5
+    ordering = ["name"]
     permission_required = "task_manager.view_team"
-    queryset = Team.objects.all().order_by("name")
-
-    def get_context_data(self, **kwargs) -> Dict[str, Any]:
-        context = super().get_context_data(**kwargs)
-        team_id = 0
-        if self.request.user.groups.filter(name="Basic Group"):
-            user_id = self.request.user.id
-            team_id = Worker.objects.get(id=user_id).teammates.all()[0].id
-        context["team_id"] = team_id
-
-        return context
 
 
 class TeamDetailView(PermissionRequiredMixin, LoginRequiredMixin, generic.DetailView):
@@ -206,26 +194,26 @@ class TeamDetailView(PermissionRequiredMixin, LoginRequiredMixin, generic.Detail
     permission_required = "task_manager.view_team"
 
 
-# to add PermissionRequiredMixin
-class TeamUpdateView(LoginRequiredMixin, generic.UpdateView):
+class TeamUpdateView(PermissionRequiredMixin, LoginRequiredMixin, generic.UpdateView):
     model = Team
     fields = "__all__"
+    permission_required = "task_manager.change_team"
 
     def get_success_url(self) -> str:
         return reverse("task_manager:team-detail", kwargs={"pk": self.object.pk})
 
 
-# to add PermissionRequiredMixin
-class TeamDeleteView(LoginRequiredMixin, generic.DeleteView):
+class TeamDeleteView(PermissionRequiredMixin, LoginRequiredMixin, generic.DeleteView):
     model = Team
     success_url = reverse_lazy("task_manager:team-list")
+    permission_required = "task_manager.delete_team"
 
 
 class ProjectCreateView(PermissionRequiredMixin, LoginRequiredMixin, generic.CreateView):
     model = Project
     permission_required = "task_manager.add_project"
     fields = "__all__"
-    success_url = reverse_lazy("task_manager:index")
+    success_url = reverse_lazy("task_manager:project-list")
 
 
 class ProjectListView(PermissionRequiredMixin, LoginRequiredMixin, generic.ListView):
@@ -244,22 +232,26 @@ class ProjectDetailView(PermissionRequiredMixin, LoginRequiredMixin, generic.Det
         tasks = self.object.tasks.all()
         sort_by = self.request.GET.get("sort_by")
 
-        context["tasks"] = Task.sorting(tasks, sort_by)
+        project = kwargs["object"]
+        is_member = project.team.filter(members__id=self.request.user.id).exists()
 
+        context["is_member"] = is_member
+        context["tasks"] = Task.sorting(tasks, sort_by)
         return context
 
 
-# PermissionRequiredMixin
-class ProjectUpdateView(LoginRequiredMixin, generic.UpdateView):
+class ProjectUpdateView(PermissionRequiredMixin, LoginRequiredMixin, generic.UpdateView):
     model = Project
     fields = "__all__"
+    permission_required = "task_manager.change_project"
 
     def get_success_url(self) -> str:
         return reverse("task_manager:project-detail", kwargs={"pk": self.object.pk})
 
 
-class ProjectDeleteView(LoginRequiredMixin, generic.DeleteView):
+class ProjectDeleteView(PermissionRequiredMixin, LoginRequiredMixin, generic.DeleteView):
     model = Project
+    permission_required = "task_manager.delete_project"
     success_url = reverse_lazy("task_manager:project-list")
 
 
