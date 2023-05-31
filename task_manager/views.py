@@ -1,4 +1,7 @@
+from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.db.models import QuerySet
+from django.http import HttpResponse
 from django.shortcuts import render
 from django.urls import reverse_lazy, reverse
 from django.views import generic
@@ -8,7 +11,7 @@ from task_manager.forms import WorkerCreationForm, TaskForm
 from task_manager.models import Position, Worker, TaskType, Task, Team, Project
 
 
-def index(request) -> render:
+def index(request) -> HttpResponse:
     return render(request, "task_manager/index.html")
 
 
@@ -32,6 +35,18 @@ class WorkerListView(PermissionRequiredMixin, LoginRequiredMixin, generic.ListVi
     permission_required = "task_manager.view_worker"
     paginate_by = 5
     queryset = Worker.objects.select_related("position").order_by("username")
+
+    def get_queryset(self) -> QuerySet:
+        queryset = get_user_model().objects.none()
+        if self.request.user.groups.filter(name="Team Lead Group"):
+            queryset = get_user_model().objects.all()
+        elif self.request.user.groups.filter(name="Basic Group"):
+            user_id = self.request.user.id
+            team_id = Worker.objects.get(id=user_id).teammates.all()[0].id
+            queryset = Worker.objects.prefetch_related(
+                "teammates"
+            ).filter(teammates=team_id).order_by("username")
+        return queryset
 
 
 class WorkerDetailView(PermissionRequiredMixin, LoginRequiredMixin, generic.DetailView):
@@ -59,7 +74,7 @@ class TaskCreateView(PermissionRequiredMixin, LoginRequiredMixin, generic.Create
     form_class = TaskForm
     permission_required = "task_manager.add_task"
 
-    def get_success_url(self):
+    def get_success_url(self) -> str:
         project = Project.objects.get(id=self.kwargs["project_id"])
 
         return reverse("task_manager:project-detail", kwargs={"pk": project.pk})
@@ -88,6 +103,17 @@ class TeamListView(PermissionRequiredMixin, LoginRequiredMixin, generic.ListView
     model = Team
     paginate_by = 5
     permission_required = "task_manager.view_team"
+    queryset = Team.objects.all().order_by("name")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        team_id = 0
+        if self.request.user.groups.filter(name="Basic Group"):
+            user_id = self.request.user.id
+            team_id = Worker.objects.get(id=user_id).teammates.all()[0].id
+        context["team_id"] = team_id
+
+        return context
 
 
 class TeamDetailView(PermissionRequiredMixin, LoginRequiredMixin, generic.DetailView):
@@ -121,3 +147,7 @@ class ProjectDetailView(PermissionRequiredMixin, LoginRequiredMixin, generic.Det
         context["tasks"] = Task.sorting(tasks, sort_by)
 
         return context
+
+
+def custom_permission_denied(request, *args, **kwargs) -> HttpResponse:
+    return render(request, "403.html", status=403)

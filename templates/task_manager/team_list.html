@@ -7,16 +7,15 @@
 
   {% for team in team_list %}
     <ul>
-      <li><a href="{{ team.get_absolute_url }}">{{ team.name }}</a></li>
+      {% if team_id == team.id and team_id > 0%}
+        <li><a href="{{ team.get_absolute_url }}">See details</a>{{ team.name }}</li>
+        {% else %}
+        <li>{{ team.name }}</li>
+      {% endif %}
       <li>{{ team.team_lead }}</li>
-      <li>
         <ul>
-          {% for member in team.members.all %}
-            <li>{{ member }}</li>
-          {% endfor %}
-
+          <li>{{ team.members.all|join:", " }}</li>
         </ul>
-      </li>
     </ul>
   {% endfor %}
 

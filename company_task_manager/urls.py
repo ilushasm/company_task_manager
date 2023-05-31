@@ -22,3 +22,5 @@ urlpatterns = [
     path("", include("task_manager.urls", namespace="task_manager")),
     path('accounts/', include('django.contrib.auth.urls'))
 ]
+
+handler403 = "task_manager.views.custom_permission_denied"
