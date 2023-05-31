@@ -1,9 +1,14 @@
 {% extends "base.html" %}
+
 {% block title %}
   <title>{{ team.name }}</title>
 {% endblock %}
+
 {% block content %}
+
   <h1>{{ team.name }}</h1>
+  <a href="{% url "task_manager:team-update" pk=team.pk %}">Update team</a>
+  <a href="{% url "task_manager:team-delete" pk=team.pk %}">Delete team</a>
   <h3>Team-lead: {{ team.team_lead }}</h3>
   <h4>Team members</h4>
 
@@ -13,8 +18,9 @@
     {% endfor %}
   </ul>
 
-  <h4>Team's Project</h4>
+  <h4>Team's Projects</h4>
   <ol>
+
     {% for project in team.projects.all %}
       <li><a href="{{ project.get_absolute_url }}">{{ project }}</a></li>
     {% endfor %}

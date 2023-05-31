@@ -1,8 +1,9 @@
 from django import forms
+from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import Group
 
-from task_manager.models import Worker, Task
+from task_manager.models import Worker, Task, Team
 
 
 class WorkerCreationForm(UserCreationForm):
@@ -21,7 +22,7 @@ class WorkerCreationForm(UserCreationForm):
             "groups"
         )
 
-    def save(self, commit=True):
+    def save(self, commit=True) -> Worker:
         worker = super().save(commit=False)
         if commit:
             worker.save()
@@ -34,6 +35,14 @@ class DateInput(forms.DateInput):
 
 
 class TaskForm(forms.ModelForm):
+    def __init__(self, project_id, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        id_list = Team.objects.filter(
+            projects__id=project_id
+        ).values_list('members', flat=True)
+        queryset_two = get_user_model().objects.filter(id__in=list(id_list))
+        self.fields['assignees'].queryset = queryset_two
+
     class Meta:
         model = Task
         fields = ["name", "description", "priority", "deadline", "task_type", "is_completed", "assignees"]

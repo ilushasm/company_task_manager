@@ -4,6 +4,7 @@
 {% endblock %}
 {% block content %}
   <h1>List of Workers</h1>
+  <a href="{% url "task_manager:worker-create" %}">Create new Worker</a>
 
   <ul>
     {% for worker in worker_list %}

@@ -4,6 +4,7 @@
 {% endblock %}
 {% block content %}
   <h1>List of Projects</h1>
+  <a href="{% url "task_manager:project-create" %}">Create new Project</a>
 
   {% for project in project_list %}
     <div>

@@ -4,6 +4,8 @@
 {% endblock %}
 {% block content %}
   <h1>{{ project.name }}</h1>
+  <a href="{% url "task_manager:project-update" pk=project.pk %}">Update project</a>
+  <a href="{% url "task_manager:project-delete" pk=project.pk %}">Delete project</a>
   <h3>Teams on the project</h3>
   <ul>
     {% for team in project.team.all %}
@@ -29,7 +31,19 @@
       <li>
         <ul>
           <li>{{ task.name }}</li>
-          <li>{{ task.description }}</li>
+          <ul>
+            <li>{{ task.description }}</li>
+            <li><a href="{% url "task_manager:task-update" pk=task.pk%}">Update Task</a></li>
+            <li><a href="{% url "task_manager:task-delete" pk=task.pk%}">Delete Task</a></li>
+            {% if not task.is_completed %}
+              <li>
+                <form method="post" action="{% url 'task_manager:task-complete' pk=task.pk %}">
+                  {% csrf_token %}
+                  <button type="submit">Complete Task</button>
+                </form>
+              </li>
+            {% endif %}
+          </ul>
         </ul>
       </li>
     {% endfor %}

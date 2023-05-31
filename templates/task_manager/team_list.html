@@ -1,23 +1,32 @@
 {% extends "base.html" %}
+
 {% block title %}
   <title>Teams list</title>
 {% endblock %}
+
 {% block content %}
+
   <h1>List of Teams</h1>
+  <a href="{% url "task_manager:team-create" %}">Create new Team</a>
 
   {% for team in team_list %}
+
     <ul>
-      {% if team_id == team.id and team_id > 0%}
+
+      {% if team_id == team.id or team_id == 0 %}
         <li><a href="{{ team.get_absolute_url }}">See details</a>{{ team.name }}</li>
+
         {% else %}
         <li>{{ team.name }}</li>
+
       {% endif %}
+
       <li>{{ team.team_lead }}</li>
         <ul>
           <li>{{ team.members.all|join:", " }}</li>
         </ul>
     </ul>
-  {% endfor %}
 
+  {% endfor %}
 
 {% endblock %}

@@ -5,6 +5,8 @@
 {% block content %}
   <h1>{{ worker }}</h1>
   <h3>{{ worker.position }}</h3>
+  <a href="{% url "task_manager:worker-update" pk=worker.pk %}">Update worker</a>
+  <a href="{% url "task_manager:worker-delete" pk=worker.pk %}">Delete worker</a>
   <h5>Assigned tasks</h5>
   <p>
     <a href="{% url "task_manager:worker-detail" pk=worker.pk %}?sort_by=deadline">

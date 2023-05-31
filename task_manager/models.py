@@ -30,8 +30,8 @@ class Worker(AbstractUser):
     def __str__(self) -> str:
         return f"{self.first_name} {self.last_name} ({self.username})"
 
-    def get_absolute_url(self):
-        return reverse("task_manager:index")
+    def get_absolute_url(self) -> str:
+        return reverse("task_manager:worker-detail", args=[str(self.id)])
 
 
 class Team(models.Model):
@@ -42,7 +42,7 @@ class Team(models.Model):
     def __str__(self) -> str:
         return self.name
 
-    def get_absolute_url(self):
+    def get_absolute_url(self) -> str:
         return reverse("task_manager:team-detail", args=[str(self.id)])
 
 
@@ -54,7 +54,7 @@ class Project(models.Model):
     def __str__(self) -> str:
         return self.name
 
-    def get_absolute_url(self):
+    def get_absolute_url(self) -> str:
         return reverse("task_manager:project-detail", args=[str(self.id)])
 
 
@@ -78,11 +78,12 @@ class Task(models.Model):
     @classmethod
     def sorting(cls, tasks, sort_by: str) -> object:
         if sort_by == "deadline":
-            tasks = tasks.order_by("deadline")
+            tasks = tasks.order_by("deadline", "is_completed")
         elif sort_by == "is_completed":
-            tasks = tasks.order_by("is_completed")
+            tasks = tasks.order_by("deadline", "is_completed")
         elif sort_by == "priority":
             tasks = tasks.order_by(
+                "is_completed",
                 models.Case(
                     models.When(priority="Urgent", then=0),
                     models.When(priority="High", then=1),

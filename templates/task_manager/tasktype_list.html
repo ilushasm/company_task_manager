@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}
+  <title>Task Type list</title>
+{% endblock %}
+{% block content %}
+  <h1>List of Task Types</h1>
+  <a href="{% url "task_manager:position-create" %}">Create new position</a>
+  <table>
+    <tr>
+        <th>Name</th>
+        <th></th>
+        <th></th>
+    </tr>
+    {% for tasktype in tasktype_list %}
+      <tr>
+        <td>{{ tasktype.name}}</td>
+        <td><a href="{% url "task_manager:task-type-update" pk=tasktype.id %}">
+          Update
+        </a></td>
+        <td><a href="{% url "task_manager:task-type-delete" pk=tasktype.id %}">
+          Delete
+        </a></td>
+      </tr>
+    {% endfor %}
+    
+  </table>
+
+{% endblock %}
