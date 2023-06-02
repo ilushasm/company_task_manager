@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import Group
 
-from task_manager.models import Worker, Task, Team
+from task_manager.models import Worker, Task, Team, Project
 
 
 class WorkerCreationForm(UserCreationForm):
@@ -55,3 +55,24 @@ class TaskForm(forms.ModelForm):
             "is_completed": forms.CheckboxInput(),
             "assignees": forms.CheckboxSelectMultiple()
         }
+
+
+class TeamFrom(forms.ModelForm):
+
+    class Meta:
+        model = Team
+        fields = ["name", "team_lead", "members"]
+        widgets = {
+            "members": forms.CheckboxSelectMultiple(),
+        }
+
+
+class ProjectForm(forms.ModelForm):
+
+    class Meta:
+        model = Project
+        fields = ["name", "description", "team"]
+        widgets = {
+            "team": forms.CheckboxSelectMultiple(),
+        }
+

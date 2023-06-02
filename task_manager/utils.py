@@ -1,4 +1,5 @@
 from django.contrib.auth.models import Group, Permission
+from django.forms import forms
 
 
 def create_groups_and_permissions() -> None:
@@ -32,3 +33,19 @@ def create_groups_and_permissions() -> None:
         ]
     )
     team_lead_group.permissions.set(team_lead_permissions)
+
+
+def get_team_form(form) -> forms.Form:
+    form.fields["name"].widget.attrs["class"] = "form-control form-group"
+    form.fields["team_lead"].widget.attrs["class"] = "form-control"
+    form.fields["members"].widget.attrs["class"] = "form-check-input"
+    form.fields["members"].widget.attrs["type"] = "checkbox"
+    return form
+
+
+def get_project_form(form) -> forms.Form:
+    form.fields["name"].widget.attrs["class"] = "form-control form-group"
+    form.fields["description"].widget.attrs["class"] = "form-control"
+    form.fields["team"].widget.attrs["class"] = "form-check-input"
+    form.fields["team"].widget.attrs["type"] = "checkbox"
+    return form
