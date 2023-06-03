@@ -1,14 +1,89 @@
 {% extends "base.html" %}
+
 {% block title %}
-  <title>Task</title>
+  <title>
+    {% if task %}
+      Update task
+      {% else %}
+      Create task
+    {% endif %}
+  </title>
 {% endblock %}
+
 {% block content %}
-  <h1>Create new Task</h1>
-  <form action="" method="post" novalidate>
-    {% csrf_token %}
-    {{ form.as_p }}
-    <input type="hidden" value="{{ task.project_id }}" name="project">
-    <input type="submit" value="Submit">
-  </form>
-  <h5><a href="{% url "task_manager:task-type-create" %}">Create new task type</a></h5>
-{% endblock %}
+  <main class="main-content mt-0">
+    <section>
+      <div class="page-header">
+        <div class="container">
+          <div class="row">
+            <div class="col-xl-4 col-lg-5 col-md-6 d-flex flex-column mx-auto">
+              <div class="card card-plain mt-0">
+
+                <div class="card-header pb-0 text-left bg-transparent">
+                  <h3 class="font-weight-bolder text-muted">
+                    {% if task %}
+                      Update task
+                      {% else %}
+                      Create task
+                    {% endif %}
+                  </h3>
+                </div>
+
+                <div class="card-body">
+                  <form role="form" method="post" action="#">
+                    {% csrf_token %}
+
+                    {% if form.non_field_errors %}
+                      {% for error in form.non_field_errors %}
+                        <span class="text-danger">{{ error }}</span>
+                      {% endfor %}
+                    {% endif %}
+
+                    {% for field in form %}
+                      {% if field.label == "Assignees" %}
+                        <label for="id_members">Choose one or several team members</label>
+
+                        {% for member in form.assignees %}
+                          <div class="form-check">
+                            {{ member.tag }}
+                            <label class="form-check-label" for="{{ member.id_for_label }}">
+                              {{ member.choice_label }}
+                            </label>
+                          </div>
+                        {% endfor %}
+
+                        {% else %}
+                      <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                      <div class="mb-3">
+                        {{field}}
+                      </div>
+                      {% endif %}
+                    {% endfor %}
+
+                    <div class="text-center">
+                      <button type="submit" class="btn bg-gradient-secondary w-100 mt-1 mb-0">
+                        {% if task %}
+                          Update
+                          {% else %}
+                          Create
+                        {% endif %}
+                      </button>
+                    </div>
+
+                  </form>
+
+                </div>
+
+              </div>
+            </div>
+
+            <div class="col-md-3 mt-8">
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+{% endblock content %}

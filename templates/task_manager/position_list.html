@@ -1,38 +1,97 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}
-  <title>Position list</title>
+  <title>Positions</title>
+{% endblock %}
+
+{% block style %}
+  <link rel="stylesheet" href="/static/css/dropdown.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
 {% endblock %}
 
 {% block content %}
+  <div class="container-fluid py-4">
+    <div class="row">
+      <div class="col-12">
+        <div class="card mb-4">
 
-  <h1>List of Positions</h1>
-  <a href="{% url "task_manager:position-create" %}">Create new position</a>
+          <div class="card-header pb-0">
+            <div class="d-flex justify-content-between">
+              <div>
+                <h4>All positions</h4>
+              </div>
+              <div>
+                <a class="btn btn-success" href="{% url "task_manager:position-create" %}">Add position</a>
+              </div>
+            </div>
+          </div>
 
-  <table>
+          <div class="card-body px-0 pt-0 pb-2">
+            <div class="table-responsive p-0">
 
-    <tr>
-        <th>Name</th>
-        <th></th>
-        <th></th>
-    </tr>
+              <table class="table align-items-center justify-content-center mb-0">
 
-    {% for position in position_list %}
-      <tr>
+                <thead>
+                  <tr>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                      Position name</th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                      Number of this position</th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                      Edit or delete</th>
+                  </tr>
+                </thead>
 
-        <td>{{ position.name}}</td>
+                <tbody>
 
-        <td><a href="{% url "task_manager:position-update" pk=position.id %}">
-          Update
-        </a></td>
+                  {% for position in position_list %}
+                    <tr {% if forloop.last or forloop.revcounter == 2 %}class="last-row"{% endif %} >
 
-        <td><a href="{% url "task_manager:position-delete" pk=position.id %}">
-          Delete
-        </a></td>
+                      <td>
+                        <div class="d-flex px-3 py-1">
+                          <div class="d-flex flex-column justify-content-center">
+                            <h6 class="mb-0 text-sm">{{ position.name }}</h6>
+                          </div>
+                        </div>
+                      </td>
 
-      </tr>
-    {% endfor %}
-    
-  </table>
+                      <td>
+                        <div class="d-flex px-3 py-1">
+                          <div class="d-flex flex-column justify-content-center">
+                            <h6 class="mb-0 text-sm">{{ position.count }}</h6>
+                          </div>
+                        </div>
+                      </td>
 
+                      <td>
+                        <div class="dropdown px-5 text-bold">
+                          <a class="btn-sm" href="#"><i class="fas fa-bars"></i></a>
+                          <div class="dropdown-content flex-column text-center">
+                            <a href="{% url "task_manager:position-update" pk=position.pk %}" class="text-normal">Edit</a>
+                            <a href="{% url "task_manager:position-delete" pk=position.pk %}" class="text-normal">Delete</a>
+                          </div>
+                        </div>
+                      </td>
+
+                    </tr>
+
+                  {% endfor %}
+
+                </tbody>
+
+              </table>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}
+
+{% block extrascript %}
+  <script src="/static/js/dropdown.js"></script>
 {% endblock %}

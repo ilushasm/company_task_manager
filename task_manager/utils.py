@@ -49,3 +49,27 @@ def get_project_form(form) -> forms.Form:
     form.fields["team"].widget.attrs["class"] = "form-check-input"
     form.fields["team"].widget.attrs["type"] = "checkbox"
     return form
+
+
+def get_worker_form(form) -> forms.Form:
+    form.fields["username"].widget.attrs["class"] = "form-control"
+    form.fields["first_name"].widget.attrs["class"] = "form-control"
+    form.fields["last_name"].widget.attrs["class"] = "form-control"
+    form.fields["position"].widget.attrs["class"] = "form-control"
+    form.fields["groups"].widget.attrs["class"] = "form-check-input"
+    form.fields["groups"].widget.attrs["type"] = "checkbox"
+    if "password1" in form.fields:
+        form.fields["password1"].widget.attrs["class"] = "form-control"
+        form.fields["password2"].widget.attrs["class"] = "form-control"
+
+    return form
+
+
+def get_task_form(form, **kwargs) -> forms.Form:
+    form.fields["name"].widget.attrs["class"] = "form-control form-group"
+    form.fields["description"].widget.attrs["class"] = "form-control"
+    form.fields["priority"].widget.attrs["class"] = "form-control"
+    form.fields["deadline"].widget.attrs["class"] = "form-control"
+    form.fields["assignees"].widget.attrs["class"] = "form-check-input"
+    form.fields["assignees"].widget.attrs["type"] = "checkbox"
+    return form

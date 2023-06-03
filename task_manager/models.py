@@ -1,7 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AbstractUser, Group
 from django.db import models
-from django.forms import forms
 from django.urls import reverse
 
 
@@ -58,6 +57,15 @@ class Project(models.Model):
     def get_absolute_url(self) -> str:
         return reverse("task_manager:project-detail", args=[str(self.id)])
 
+    def get_percentage(self) -> int:
+        percentage = 0
+        total_tasks = self.tasks.all()
+        completed_tasks = total_tasks.filter(is_completed=True).count()
+        if total_tasks.count() != 0 and completed_tasks != 0:
+            percentage = (completed_tasks / total_tasks.count()) * 100
+
+        return round(percentage)
+
 
 class Task(models.Model):
     PRIORITY_CHOICES = (
@@ -84,7 +92,6 @@ class Task(models.Model):
             tasks = tasks.order_by("deadline", "is_completed")
         elif sort_by == "priority":
             tasks = tasks.order_by(
-                "is_completed",
                 models.Case(
                     models.When(priority="Urgent", then=0),
                     models.When(priority="High", then=1),
@@ -95,6 +102,22 @@ class Task(models.Model):
                 )
             )
         return tasks
+
+    @staticmethod
+    def task_sorting(hide_completed, cookie_hide_completed, tasks) -> dict:
+        if hide_completed is None and cookie_hide_completed is not None:
+            hide_completed = cookie_hide_completed
+        elif hide_completed is not None and hide_completed != cookie_hide_completed:
+            cookie_hide_completed = hide_completed
+
+        if hide_completed == "True":
+            tasks = tasks.filter(is_completed=False)
+
+        return {
+            "sorted_tasks": tasks,
+            "hide_completed": hide_completed,
+            "cookie_hide_completed": cookie_hide_completed
+        }
 
     def __str__(self) -> str:
         return self.name

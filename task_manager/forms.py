@@ -30,12 +30,22 @@ class WorkerCreationForm(UserCreationForm):
         return worker
 
 
+class WorkerUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Worker
+        fields = ["username", "first_name", "last_name", "position", "groups"]
+        widgets = {
+            "groups": forms.CheckboxSelectMultiple,
+        }
+
+
 class DateInput(forms.DateInput):
     input_type = "date"
 
 
 class TaskForm(forms.ModelForm):
-    def __init__(self, project_id, *args, **kwargs) -> None:
+    def __init__(self, *args, **kwargs) -> None:
+        project_id = kwargs.pop('project_id')
         super().__init__(*args, **kwargs)
         id_list = Team.objects.filter(
             projects__id=project_id
@@ -45,14 +55,13 @@ class TaskForm(forms.ModelForm):
 
     class Meta:
         model = Task
-        fields = ["name", "description", "priority", "deadline", "task_type", "is_completed", "assignees"]
+        fields = ["name", "description", "priority", "deadline", "task_type", "assignees"]
         widgets = {
             "name": forms.TextInput(attrs={"class": "form-control"}),
             "description": forms.Textarea(attrs={"class": "form-control"}),
             "priority": forms.Select(attrs={"class": "form-control"}),
             "deadline": forms.DateInput(attrs={"class": "form-control", "type": "date"}),
             "task_type": forms.Select(attrs={"class": "form-control"}),
-            "is_completed": forms.CheckboxInput(),
             "assignees": forms.CheckboxSelectMultiple()
         }
 
@@ -75,4 +84,3 @@ class ProjectForm(forms.ModelForm):
         widgets = {
             "team": forms.CheckboxSelectMultiple(),
         }
-

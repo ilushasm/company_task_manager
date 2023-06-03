@@ -1,24 +1,96 @@
 {% extends "base.html" %}
-{% load custom_filters %}
+{% load static %}
 
 {% block title %}
   <title>Teams list</title>
 {% endblock %}
 
 {% block content %}
+<div class="container-fluid py-4">
+  <div class="row">
+    <div class="col-12">
 
-  <h1>List of Teams</h1>
-  {% if user|has_group:"Team Lead Group" %}
-    <a href="{% url "task_manager:team-create" %}">Create new Team</a>
-  {% endif %}
+      {% for team in team_list %}
 
-    {% for team in team_list %}
-      <ul>
-        <li>{{ team.name }}</li>
-        <li>Team Lead: {{ team.team_lead }}</li>
-        <li>Team members: {{ team.members.all|join:", " }}</li>
-        <li><a href="{{ team.get_absolute_url }}">See details</a>{{ team.name }}</li>
-      </ul>
-    {% endfor %}
+        <div class="card mb-4">
+          <div class="card-header pb-0">
+            <div class="d-flex justify-content-between">
+              <div>
+                <h5>{{ team.name }}</h5>
+              </div>
+              <div>
+                <a class="btn btn-secondary" href="{% url "task_manager:team-detail" pk=team.pk %}">
+                  See details
+                </a>
+              </div>
+            </div>
+          </div>
+            {% if team.projects.all %}
+              <div class="card-body px-0 pt-0 pb-2">
+                <div class="table-responsive p-0">
+                  <table class="table align-items-center justify-content-center mb-0">
+                    <thead>
+                      <tr>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Project</th>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                          Completion
+                        </th>
+                      </tr>
+                    </thead>
 
+                    <tbody>
+
+                      {% for project in team.projects.all %}
+
+                        <tr>
+
+                          <td>
+                            <div class="d-flex px-3">
+                              <div class="my-auto">
+                                <h6 class="mb-0 text-sm">{{ project.name }}</h6>
+                              </div>
+                            </div>
+                          </td>
+
+                          <td class="align-middle text-center">
+                            <div class="d-flex">
+                              <span class="me-2 text-xs font-weight-bold">{{ project.get_percentage }}%</span>
+                              <div
+                                  class="progress-bar bg-gradient-{% if project.get_percentage < 30 %}danger
+                                  {% elif project.get_percentage < 70 %}info{% else %}success
+                                  {% endif %}"
+                                  role="progressbar" aria-valuenow="{{ project.get_percentage }}"
+                                  aria-valuemin="0" aria-valuemax="100" style="width: {{ project.get_percentage }}%;">
+                              </div>
+                            </div>
+                          </td>
+
+                        </tr>
+
+                      {% endfor %}
+
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+            {% else %}
+
+            <div class="card-body px-0 pt-0 pb-2">
+              <div class="d-flex flex-column align-items-start mx-4">
+                <h6 class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                  No projects yet
+                </h6>
+              </div>
+            </div>
+
+          {% endif %}
+
+        </div>
+
+      {% endfor %}
+
+    </div>
+  </div>
+</div>
 {% endblock %}
