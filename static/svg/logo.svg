@@ -1,7 +1,7 @@
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
 <!-- Uploaded to: SVG Repo, www.svgrepo.com, Transformed by: SVG Repo Mixer Tools -->
-<svg fill="#919191" width="800px" height="800px" viewBox="-2.72 -2.72 21.44 21.44" id="clalendar-check-16px" xmlns="http://www.w3.org/2000/svg" stroke="#919191">
+<svg width="800px" height="800px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 <g id="SVGRepo_bgCarrier" stroke-width="0"/>
-<g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" stroke="#CCCCCC" stroke-width="0.096"/>
-<g id="SVGRepo_iconCarrier"> <path id="Path_156" data-name="Path 156" d="M38.5,1H38V.5a.5.5,0,0,0-1,0V1H29V.5a.5.5,0,0,0-1,0V1h-.5A2.5,2.5,0,0,0,25,3.5v10A2.5,2.5,0,0,0,27.5,16h11A2.5,2.5,0,0,0,41,13.5V3.5A2.5,2.5,0,0,0,38.5,1Zm0,1a1.5,1.5,0,0,1,1.408,1H38V2ZM37,2V3H29V2ZM27.5,2H28V3H26.092A1.5,1.5,0,0,1,27.5,2Zm11,13h-11A1.5,1.5,0,0,1,26,13.5V4H40v9.5A1.5,1.5,0,0,1,38.5,15Zm-.646-8.854a.5.5,0,0,1,0,.708l-6,6a.5.5,0,0,1-.708,0l-3-3a.5.5,0,0,1,.708-.708L31.5,11.793l5.646-5.647A.5.5,0,0,1,37.854,6.146Z" transform="translate(-25)"/> </g>
+<g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"/>
+<g id="SVGRepo_iconCarrier"> <path d="M12.37 8.87988H17.62" stroke="#5F7161" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> <path d="M6.38 8.87988L7.13 9.62988L9.38 7.37988" stroke="#5F7161" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> <path d="M12.37 15.8799H17.62" stroke="#5F7161" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> <path d="M6.38 15.8799L7.13 16.6299L9.38 14.3799" stroke="#5F7161" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> <path d="M9 22H15C20 22 22 20 22 15V9C22 4 20 2 15 2H9C4 2 2 4 2 9V15C2 20 4 22 9 22Z" stroke="#5F7161" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> </g>
 </svg>
