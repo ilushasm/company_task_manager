@@ -1,67 +1,5 @@
 {% load static %}
 
-{#<!DOCTYPE html>#}
-{#<html lang="en">#}
-{##}
-{#<head>#}
-{#    {% block title %}<title>Test</title>{% endblock %}#}
-{#    <meta charset="utf-8">#}
-{#    <meta name="viewport" content="width=device-width, initial-scale=1">#}
-{#    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>#}
-{##}
-{#    <!-- Favicon -->#}
-{#    <meta charset="utf-8" />#}
-{#    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">#}
-{#    <link rel="apple-touch-icon" sizes="76x76" href="{% static 'img/apple-icon.png' %}">#}
-{#    <link rel="icon" type="image/png" href="{% static 'img/favicon.png' %}">#}
-{##}
-{#    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />#}
-{#    <!-- Nucleo Icons -->#}
-{#    <link href="{% static 'css/nucleo-icons.css' %}" rel="stylesheet" />#}
-{#    <link href="{% static 'css/nucleo-svg.css' %}" rel="stylesheet" />#}
-{#    <!-- Font Awesome Icons -->#}
-{#    <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>#}
-{#    <link href="{% static 'css/nucleo-svg.css' %}" rel="stylesheet" />#}
-{#    <!-- CSS Files -->#}
-{#    <link id="pagestyle" href="{% static 'css/soft-ui-dashboard.css' %}" rel="stylesheet" />#}
-{#    <link id="pagestyle_dark" href="{% static 'css/dark-theme-core.css' %}" rel="stylesheet" />#}
-{##}
-{#    {% block extrahead %}{% endblock extrahead %}#}
-{#    {% block extrastyle %}{% endblock extrastyle %}#}
-{##}
-{#</head>#}
-{##}
-{#<body>#}
-{#    {% include "includes/sidebar.html" %}#}
-{#    <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">#}
-{#        {% include "includes/navigation.html" %}#}
-{#    </main>#}
-{#<div>#}
-{#  <div>#}
-{#    <div>#}
-{##}
-{#        {% block sidebar %}#}
-{##}
-{#        {% endblock %}#}
-{##}
-{#  </div>#}
-{#    <div>#}
-{#      <a href="{% url "task_manager:index" %}">Home</a>#}
-{#      <button onclick="history.back()" >Back</button>#}
-{##}
-{#      {% block content %}{% endblock %}#}
-{##}
-{#      {% block pagination %}#}
-{#        {% include "includes/pagination.html" %}#}
-{#      {% endblock %}#}
-{##}
-{#    </div>#}
-{#  </div>#}
-{#</div>#}
-{#</body>#}
-{##}
-{#</html>#}
-
 <!DOCTYPE html>
 <html lang="en-us">
 
@@ -73,33 +11,31 @@
     {% endblock %}
 
 
-    <!-- Favicon -->
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-{#    <link rel="apple-touch-icon" sizes="76x76" href="/static/svg/logo.svg">#}
-{#    <link rel="icon" type="image/png" href="/static/svg/logo.svg">#}
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
     <link id="pagestyle" href="{% static 'css/soft-ui-dashboard.css' %}" rel="stylesheet" />
 
-    {% block extrahead %}{% endblock extrahead %}
-    {% block style %}{% endblock %}
+  <link rel="stylesheet" href="/static/css/dropdown.css">
+  <link rel="stylesheet" href="/static/css/style.css">
+
+  {% block extrahead %}{% endblock extrahead %}
+  {% block style %}{% endblock %}
 
 </head>
 
-<body class="g-sidenav-show bg-gray-100">
+<body class="g-sidenav-show my-background-color">
 
   {% include "includes/sidebar.html" %}
 
   <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
-      {% include "includes/navigation.html" %}
-      {% block content %}{% endblock content %}
+    {% include "includes/navigation.html" %}
+    {% block content %}{% endblock content %}
   </main>
 
+  <script src="/static/js/dropdown.js"></script>
+
 {% block scripts %}{% endblock scripts %}
-
-
-
-{% block extrascript %}{% endblock extrascript %}
 
 </body>
 </html>

@@ -13,7 +13,7 @@
               <div class="card card-plain mt-0">
 
                 <div class="card-header pb-0 text-left bg-transparent">
-                  <h3 class="font-weight-bolder text-muted">
+                  <h3 class="font-weight-bolder my-primary-font">
                     {% if worker %}
                       Update account
                       {% else %}
@@ -22,18 +22,23 @@
                   </h3>
                 </div>
 
-                <div class="card-body">
-                                    <form role="form" method="post" action="#">
-                    {% csrf_token %}
-
-                    {% if form.non_field_errors %}
-                      {% for error in form.non_field_errors %}
+               <div class="card-body">
+                 <form role="form" method="post" action="#">
+                   {% csrf_token %}
+                   {% if form.field_errors %}
+                      {% for error in form.field_errors %}
                         <span class="text-danger">{{ error }}</span>
                       {% endfor %}
                     {% endif %}
 
                     {% for field in form %}
+
                       {% if field.label == "Groups" %}
+                        {% if form.field.errors %}
+                        {% for error in form.field.errors %}
+                          <span class="text-danger">{{ error }}</span>
+                        {% endfor %}
+                      {% endif %}
                         <label for="id_members">Choose one of the permissions group</label>
 
                         {% for member in form.groups %}
@@ -46,6 +51,11 @@
                         {% endfor %}
 
                         {% else %}
+                      {% if form.field.errors %}
+                        {% for error in form.field.errors %}
+                          <span class="text-danger">{{ error }}</span>
+                        {% endfor %}
+                      {% endif %}
                       <label for="{{ field.id_for_label }}">{{ field.label }}</label>
                       <div class="mb-3">
                         {{field}}
@@ -54,64 +64,17 @@
                     {% endfor %}
 
                     <div class="text-center">
-                      <button type="submit" class="btn bg-gradient-secondary w-100 mt-1 mb-0">
-                        {% if team %}
+                      <button type="submit" class="btn my-bg-primary w-100 mt-1 mb-0">
+                        {% if worker %}
                           Update
                           {% else %}
                           Create
                         {% endif %}
                       </button>
                     </div>
-
-                    {% if team %}
-                    <div class="text-center">
-                      <a href="{% url "task_manager:team-delete" pk=team.pk %}"
-                         class="btn bg-gradient-danger w-100 mt-1 mb-0">
-                        Delete
-                      </a>
-                    </div>
-                    {% endif %}
-
                   </form>
 
 
-
-
-{#                    <div class="mb-3">#}
-{#                      <div id="id_group">#}
-{#                        <div class="radiolist">#}
-{#                          <label for="id_group_0">#}
-{#                            <input type="radio" name="group" value="1" required="" id="id_group_0" class="form-check-input">#}
-{#                            Basic Group#}
-{#                          </label>#}
-{#                        </div>#}
-{#                        <div>#}
-{#                          <label for="id_group_1">#}
-{#                            <input type="radio" name="group" value="2" required id="id_group_1" class="form-check-input">#}
-{#                            Team Lead Group#}
-{#                          </label>#}
-{#                        </div>#}
-{#                      </div>#}
-{#                    </div>#}
-{#                      {% if field.label == "Groups" %}#}
-{#                        <label for="id_members">Choose one of permission groups</label>#}
-{##}
-{#                        {% for group in form.groups %}#}
-{#                          <div class="form-check">#}
-{#                            {{ group.tag }}#}
-{#                            <label class="form-check-label" for="{{ group.id_for_label }}">#}
-{#                              {{ group.choice_label }}#}
-{#                            </label>#}
-{#                          </div>#}
-{#                        {% endfor %}#}
-{##}
-{#                        {% else %}#}
-{#                      <label for="{{ field.id_for_label }}">{{ field.label }}</label>#}
-{#                      <div class="mb-3">#}
-{#                        {{field}}#}
-{#                      </div>#}
-{#                      {% endif %}#}
-{#                    {% endfor %}#}
 
 
                 </div>
@@ -132,13 +95,4 @@
   {% block scripts %}
     <script src="/static/js/checkbox_workaround.js"></script>
   {% endblock %}
-
-{#  <h1>Testing worker</h1>#}
-{#  <form action="" method="post" novalidate>#}
-{#    {% csrf_token %}#}
-{#    {{ form.as_p }}#}
-{##}
-{#    <input type="submit" value="Submit">#}
-{#  </form>#}
-{#  <h5><a href="{% url "task_manager:task-type-create" %}">Create new position</a></h5>#}
 {% endblock %}

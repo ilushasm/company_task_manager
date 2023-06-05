@@ -14,7 +14,7 @@
           <div class="px-1" style="width: 50%;">
             <div class="d-flex">
               <div>
-                <img src="{% static 'img/team-2.jpg' %}" class="avatar avatar-xl me-3 m-2" alt="user1">
+                <img src="/static/img/{{ worker.avatar }}" class="avatar avatar-xl me-3 m-2" alt="user1">
               </div>
               <div class="flex-column mx-3">
                 <h3>{{ worker.first_name }} {{ worker.last_name }}</h3>
@@ -45,12 +45,17 @@
             </p>
           </div>
           <div class="d-flex">
+            {% if user.id == worker.pk %}
+              <div class="px-1">
+                <a class="btn my-btn-outline-primary" href="{% url "task_manager:change-password" pk=worker.pk %}">Change password</a>
+              </div>
+            {% endif %}
             {% if user|has_group:"Team Lead Group" %}
               <div class="px-1">
-                <a class="btn btn-secondary" href="{% url "task_manager:worker-update" pk=worker.pk %}">Edit account</a>
+                <a class="btn my-bg-primary" href="{% url "task_manager:worker-update" pk=worker.pk %}">Edit account</a>
               </div>
               <div class="px-1">
-                <a class="btn btn-danger text-white"
+                <a class="btn my-bg-danger"
                    href="{% url "task_manager:worker-delete" pk=worker.pk %}">Delete account</a>
               </div>
             {% endif %}
@@ -69,15 +74,15 @@
                   {% endif %}
                 </h5>
                 <div>
+                  {% if user.id == worker.id and not task.is_completed%}
+                    <a class="btn btn-outline-success text-dark m-1"
+                       href="{% url "task_manager:task-complete" pk=task.pk %}">Done</a>
+                  {% endif %}
                   {% if user|has_group:"Team Lead Group" %}
                     <a class="btn btn-outline-danger text-danger text-gradient m-1"
                        href="{% url "task_manager:task-delete" pk=task.pk %}">Delete</a>
-                    <a class="btn btn-outline-secondary text-dark m-1"
+                    <a class="btn my-btn-outline-primary text-dark m-1"
                        href="{% url "task_manager:task-update" pk=task.pk %}">Edit</a>
-                  {% endif %}
-                  {% if user.id == worker.id %}
-                    <a class="btn btn-outline-success text-dark m-1"
-                       href="{% url "task_manager:task-complete" pk=task.pk %}">Done</a>
                   {% endif %}
                 </div>
               </div>

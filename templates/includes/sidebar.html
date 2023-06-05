@@ -1,0 +1,48 @@
+{% load static %}
+
+<aside class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-3 " id="sidenav-main">
+  <div class="sidenav-header">
+    <i class="fas fa-times p-3 cursor-pointer text-secondary opacity-5 position-absolute end-0 top-0 d-none d-xl-none" aria-hidden="true" id="iconSidenav"></i>
+    <a class="navbar-brand m-0" href="{% url 'admin:index' %}">
+      <img src="/static/svg/logo.svg" class="navbar-brand-img" alt="main_logo" width="30" height="30">
+      <span class="ms-1 font-weight-bold">Task Manager</span>
+    </a>
+  </div>
+  <hr class="horizontal dark mt-0">
+  <div>
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link active" href="{% url "task_manager:index" %}">
+          <div class="my-sidebar-icon mx-2">
+            <img src="/static/svg/home.svg" alt="Home" height="16px" width="16px">
+          </div>
+          <span class="nav-link-text ms-1">Home</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link active" href="{% url "task_manager:project-list" %}">
+          <div class="my-sidebar-icon mx-2">
+            <img src="/static/svg/project.svg" alt="Project" height="16px" width="16px">
+          </div>
+          <span class="nav-link-text ms-1">Projects</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link active" href="{% url "task_manager:team-list" %}">
+          <div class="my-sidebar-icon mx-2">
+            <img src="/static/svg/team2.svg" alt="Team" height="20px" width="20px">
+          </div>
+          <span class="nav-link-text ms-1">Teams</span>
+        </a>
+      </li>
+        <li class="nav-item">
+          <a class="nav-link active" href="{% url "task_manager:worker-list" %}">
+            <div class="my-sidebar-icon mx-2">
+              <img src="/static/svg/worker.svg" alt="Workers" height="20px" width="20px">
+            </div>
+            <span class="nav-link-text ms-1">Workers</span>
+          </a>
+        </li>
+    </ul>
+  </div>
+</aside>

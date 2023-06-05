@@ -5,10 +5,6 @@
   <title>Positions</title>
 {% endblock %}
 
-{% block style %}
-  <link rel="stylesheet" href="/static/css/dropdown.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
-{% endblock %}
 
 {% block content %}
   <div class="container-fluid py-4">
@@ -22,7 +18,7 @@
                 <h4>All positions</h4>
               </div>
               <div>
-                <a class="btn btn-success" href="{% url "task_manager:position-create" %}">Add position</a>
+                <a class="btn my-bg-primary" href="{% url "task_manager:position-create" %}">Add position</a>
               </div>
             </div>
           </div>
@@ -65,11 +61,13 @@
                       </td>
 
                       <td>
-                        <div class="dropdown px-5 text-bold">
-                          <a class="btn-sm" href="#"><i class="fas fa-bars"></i></a>
-                          <div class="dropdown-content flex-column text-center">
-                            <a href="{% url "task_manager:position-update" pk=position.pk %}" class="text-normal">Edit</a>
-                            <a href="{% url "task_manager:position-delete" pk=position.pk %}" class="text-normal">Delete</a>
+                        <div class="dropdown px-3 text-bold">
+                          <a class="btn btn-link m-0 p-0" href="#">More</a>
+                          <div class="dropdown-content flex-column text-center" style="border: 1px solid lightgrey">
+                            <a href="{% url "task_manager:position-update" pk=position.pk %}" class="text-normal dropdown-option"
+                              style="border-bottom: 1px solid lightgrey">Edit</a>
+                            <a href="{% url "task_manager:position-delete" pk=position.pk %}" class="text-normal dropdown-option">
+                              Delete</a>
                           </div>
                         </div>
                       </td>
@@ -90,8 +88,4 @@
     </div>
   </div>
 
-{% endblock %}
-
-{% block extrascript %}
-  <script src="/static/js/dropdown.js"></script>
 {% endblock %}

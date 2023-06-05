@@ -20,7 +20,7 @@
               </div>
               <div>
                 {% if user|has_group:"Team Lead Group" %}
-                  <a class="btn btn-success" href="{% url "task_manager:worker-create" %}">Add employee account</a>
+                  <a class="btn my-bg-primary" href="{% url "task_manager:worker-create" %}">Add employee account</a>
                 {% endif %}
               </div>
             </div>
@@ -45,7 +45,7 @@
                       <td>
                         <div class="d-flex px-2 py-1">
                           <div>
-                            <img src="{% static 'img/team-2.jpg' %}" class="avatar avatar-sm me-3" alt="user1">
+                            <img src="/static/img/{{ worker.avatar }}" class="avatar avatar-sm me-3" alt="user1">
                           </div>
                           <div class="d-flex flex-column justify-content-center">
                             <h6 class="mb-0 text-sm">{{ worker.first_name }} {{ worker.last_name }}</h6>
@@ -62,7 +62,7 @@
                       </td>
 
                       <td>
-                          <a class="text-xs font-weight-bold mb-0"
+                          <a class="m-0 btn btn-link px-0"
                              href="{% url "task_manager:worker-detail" pk=worker.pk%}">Details</a>
                       </td>
                       <td>
