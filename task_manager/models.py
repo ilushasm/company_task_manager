@@ -1,3 +1,5 @@
+import random
+
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AbstractUser, Group
 from django.db import models
@@ -19,8 +21,28 @@ class Position(models.Model):
 
 
 class Worker(AbstractUser):
+    MALE_AVATARS = [
+        "male-1.jpg",
+        "male-2.jpg",
+        "male-3.jpg",
+        "male-4.jpg",
+    ]
+    FEMALE_AVATARS = [
+        "female-1.jpg",
+        "female-2.jpg",
+        "female-3.jpg",
+        "female-4.jpg",
+    ]
+
+    GENDER_CHOICES = (
+        ("M", "Male"),
+        ("F", "Female"),
+    )
+
     position = models.ForeignKey(Position, on_delete=models.CASCADE)
     groups = models.ManyToManyField(Group, default=1)
+    avatar = models.CharField(max_length=13, blank=True)
+    gender = models.CharField(max_length=1, choices=GENDER_CHOICES, default="M")
     REQUIRED_FIELDS = ["position_id"]
 
     class Meta:
@@ -32,6 +54,14 @@ class Worker(AbstractUser):
 
     def get_absolute_url(self) -> str:
         return reverse("task_manager:worker-detail", args=[str(self.id)])
+
+    def save(self, *args, **kwargs):
+        if not self.avatar:
+            if self.gender == "M":
+                self.avatar = random.choice(self.MALE_AVATARS)
+            else:
+                self.avatar = random.choice(self.FEMALE_AVATARS)
+        super().save(*args, **kwargs)
 
 
 class Team(models.Model):
@@ -82,7 +112,9 @@ class Task(models.Model):
     priority = models.CharField(max_length=255, choices=PRIORITY_CHOICES)
     task_type = models.ForeignKey(TaskType, on_delete=models.CASCADE)
     project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name="tasks")
-    assignees = models.ManyToManyField(get_user_model(), related_name="assigned", blank=True)
+    assignees = models.ManyToManyField(
+        get_user_model(), related_name="assigned", blank=True
+    )
 
     @classmethod
     def sorting(cls, tasks, sort_by: str) -> object:
@@ -116,7 +148,7 @@ class Task(models.Model):
         return {
             "sorted_tasks": tasks,
             "hide_completed": hide_completed,
-            "cookie_hide_completed": cookie_hide_completed
+            "cookie_hide_completed": cookie_hide_completed,
         }
 
     def __str__(self) -> str:

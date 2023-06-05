@@ -4,30 +4,29 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('task_manager', '0007_alter_worker_groups'),
+        ("task_manager", "0007_alter_worker_groups"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='position',
+            name="position",
             options={},
         ),
         migrations.AlterModelOptions(
-            name='project',
+            name="project",
             options={},
         ),
         migrations.AlterModelOptions(
-            name='tasktype',
+            name="tasktype",
             options={},
         ),
         migrations.AlterModelOptions(
-            name='team',
+            name="team",
             options={},
         ),
         migrations.AlterModelOptions(
-            name='worker',
-            options={'verbose_name': 'worker', 'verbose_name_plural': 'workers'},
+            name="worker",
+            options={"verbose_name": "worker", "verbose_name_plural": "workers"},
         ),
     ]

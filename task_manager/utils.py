@@ -3,20 +3,28 @@ from django.forms import forms
 
 
 def create_groups_and_permissions() -> None:
-    # Create Basic Group
+    # Creates Basic Group
     basic_group, _ = Group.objects.get_or_create(name="Basic Group")
 
-    # Create Team Lead Group
+    # Creates Team Lead Group
     team_lead_group, _ = Group.objects.get_or_create(name="Team Lead Group")
 
     # Assign permissions to Basic Group
     basic_permissions = Permission.objects.filter(
         content_type__app_label="task_manager",
         codename__in=[
-            "view_task", "add_task", "change_task", "delete_task",
-            "add_tasktype", "change_tasktype", "delete_tasktype", "view_tasktype",
-            "view_worker", "view_project", "view_team"
-        ]
+            "view_task",
+            "add_task",
+            "change_task",
+            "delete_task",
+            "add_tasktype",
+            "change_tasktype",
+            "delete_tasktype",
+            "view_tasktype",
+            "view_worker",
+            "view_project",
+            "view_team",
+        ],
     )
     basic_group.permissions.set(basic_permissions)
 
@@ -24,13 +32,31 @@ def create_groups_and_permissions() -> None:
     team_lead_permissions = Permission.objects.filter(
         content_type__app_label="task_manager",
         codename__in=[
-            "add_project", "change_project", "delete_project", "view_project",
-            "add_task", "change_task", "delete_task", "view_task",
-            "add_tasktype", "change_tasktype", "delete_tasktype", "view_tasktype",
-            "add_position", "change_position", "delete_position", "view_position",
-            "add_team", "change_team", "delete_team", "view_team",
-            "add_worker", "change_worker", "delete_worker", "view_worker"
-        ]
+            "add_project",
+            "change_project",
+            "delete_project",
+            "view_project",
+            "add_task",
+            "change_task",
+            "delete_task",
+            "view_task",
+            "add_tasktype",
+            "change_tasktype",
+            "delete_tasktype",
+            "view_tasktype",
+            "add_position",
+            "change_position",
+            "delete_position",
+            "view_position",
+            "add_team",
+            "change_team",
+            "delete_team",
+            "view_team",
+            "add_worker",
+            "change_worker",
+            "delete_worker",
+            "view_worker",
+        ],
     )
     team_lead_group.permissions.set(team_lead_permissions)
 
@@ -59,13 +85,14 @@ def get_worker_form(form) -> forms.Form:
     form.fields["groups"].widget.attrs["class"] = "form-check-input"
     form.fields["groups"].widget.attrs["type"] = "checkbox"
     if "password1" in form.fields:
+        form.fields["gender"].widget.attrs["class"] = "form-control"
         form.fields["password1"].widget.attrs["class"] = "form-control"
         form.fields["password2"].widget.attrs["class"] = "form-control"
 
     return form
 
 
-def get_task_form(form, **kwargs) -> forms.Form:
+def get_task_form(form) -> forms.Form:
     form.fields["name"].widget.attrs["class"] = "form-control form-group"
     form.fields["description"].widget.attrs["class"] = "form-control"
     form.fields["priority"].widget.attrs["class"] = "form-control"

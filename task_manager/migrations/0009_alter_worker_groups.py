@@ -4,16 +4,15 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('auth', '0012_alter_user_first_name_max_length'),
-        ('task_manager', '0008_alter_position_options_alter_project_options_and_more'),
+        ("auth", "0012_alter_user_first_name_max_length"),
+        ("task_manager", "0008_alter_position_options_alter_project_options_and_more"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='worker',
-            name='groups',
-            field=models.ManyToManyField(default=1, to='auth.group'),
+            model_name="worker",
+            name="groups",
+            field=models.ManyToManyField(default=1, to="auth.group"),
         ),
     ]

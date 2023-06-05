@@ -7,4 +7,5 @@ class TaskManagerConfig(AppConfig):
 
     def ready(self):
         from .utils import create_groups_and_permissions
+
         create_groups_and_permissions()

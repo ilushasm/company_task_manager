@@ -8,9 +8,7 @@ from task_manager.models import Worker, Task, Team, Project
 
 class WorkerCreationForm(UserCreationForm):
     groups = forms.ModelChoiceField(
-        queryset=Group.objects.all(),
-        widget=forms.RadioSelect,
-        required=True
+        queryset=Group.objects.all(), widget=forms.RadioSelect, required=True
     )
 
     class Meta(UserCreationForm.Meta):
@@ -19,7 +17,8 @@ class WorkerCreationForm(UserCreationForm):
             "first_name",
             "last_name",
             "position",
-            "groups"
+            "groups",
+            "gender",
         )
 
     def save(self, commit=True) -> Worker:
@@ -45,29 +44,37 @@ class DateInput(forms.DateInput):
 
 class TaskForm(forms.ModelForm):
     def __init__(self, *args, **kwargs) -> None:
-        project_id = kwargs.pop('project_id')
+        project_id = kwargs.pop("project_id")
         super().__init__(*args, **kwargs)
-        id_list = Team.objects.filter(
-            projects__id=project_id
-        ).values_list('members', flat=True)
+        id_list = Team.objects.filter(projects__id=project_id).values_list(
+            "members", flat=True
+        )
         queryset_two = get_user_model().objects.filter(id__in=list(id_list))
-        self.fields['assignees'].queryset = queryset_two
+        self.fields["assignees"].queryset = queryset_two
 
     class Meta:
         model = Task
-        fields = ["name", "description", "priority", "deadline", "task_type", "assignees"]
+        fields = [
+            "name",
+            "description",
+            "priority",
+            "deadline",
+            "task_type",
+            "assignees",
+        ]
         widgets = {
             "name": forms.TextInput(attrs={"class": "form-control"}),
             "description": forms.Textarea(attrs={"class": "form-control"}),
             "priority": forms.Select(attrs={"class": "form-control"}),
-            "deadline": forms.DateInput(attrs={"class": "form-control", "type": "date"}),
+            "deadline": forms.DateInput(
+                attrs={"class": "form-control", "type": "date"}
+            ),
             "task_type": forms.Select(attrs={"class": "form-control"}),
-            "assignees": forms.CheckboxSelectMultiple()
+            "assignees": forms.CheckboxSelectMultiple(),
         }
 
 
 class TeamFrom(forms.ModelForm):
-
     class Meta:
         model = Team
         fields = ["name", "team_lead", "members"]
@@ -77,7 +84,6 @@ class TeamFrom(forms.ModelForm):
 
 
 class ProjectForm(forms.ModelForm):
-
     class Meta:
         model = Project
         fields = ["name", "description", "team"]

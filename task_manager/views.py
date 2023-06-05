@@ -3,6 +3,7 @@ from typing import Any, Dict
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.contrib.auth.views import PasswordChangeView
 from django.db.models import Count
 from django.forms import forms
 from django.http import HttpResponse, HttpResponseRedirect
@@ -11,15 +12,29 @@ from django.urls import reverse_lazy, reverse
 from django.views import generic, View
 
 from task_manager import utils
-from task_manager.forms import WorkerCreationForm, TaskForm, TeamFrom, ProjectForm, WorkerUpdateForm
+from task_manager.forms import (
+    WorkerCreationForm,
+    TaskForm,
+    TeamFrom,
+    ProjectForm,
+    WorkerUpdateForm,
+)
 from task_manager.models import Position, Worker, TaskType, Task, Team, Project
 
 
 def index(request) -> HttpResponse:
-    return render(request, "task_manager/index.html")
+    tasks = Task.objects.all().count()
+    projects = Project.objects.all().count()
+    teams = Team.objects.all().count()
+    workers = get_user_model().objects.all().count()
+    context = {"tasks": tasks, "projects": projects, "teams": teams, "workers": workers}
+
+    return render(request, "task_manager/index.html", context)
 
 
-class PositionCreateView(PermissionRequiredMixin, LoginRequiredMixin, generic.CreateView):
+class PositionCreateView(
+    PermissionRequiredMixin, LoginRequiredMixin, generic.CreateView
+):
     model = Position
     permission_required = "task_manager.add_position"
     fields = "__all__"
@@ -31,7 +46,9 @@ class PositionCreateView(PermissionRequiredMixin, LoginRequiredMixin, generic.Cr
         return form
 
 
-class PositionUpdateView(PermissionRequiredMixin, LoginRequiredMixin, generic.UpdateView):
+class PositionUpdateView(
+    PermissionRequiredMixin, LoginRequiredMixin, generic.UpdateView
+):
     model = Position
     fields = "__all__"
     permission_required = "task_manager.change_position"
@@ -43,7 +60,9 @@ class PositionUpdateView(PermissionRequiredMixin, LoginRequiredMixin, generic.Up
         return form
 
 
-class PositionDeleteView(PermissionRequiredMixin, LoginRequiredMixin, generic.DeleteView):
+class PositionDeleteView(
+    PermissionRequiredMixin, LoginRequiredMixin, generic.DeleteView
+):
     model = Position
     permission_required = "task_manager.delete_position"
     success_url = reverse_lazy("task_manager:position-list")
@@ -58,13 +77,14 @@ class PositionDeleteView(PermissionRequiredMixin, LoginRequiredMixin, generic.De
 
 class PositionListView(PermissionRequiredMixin, LoginRequiredMixin, generic.ListView):
     model = Position
-    paginate_by = 20
     permission_required = "task_manager.view_position"
     queryset = Position.objects.all().order_by("name")
 
     def get_context_data(self, *args, **kwargs) -> Dict[str, Any]:
         context = super().get_context_data(*args, **kwargs)
-        position_list = Position.objects.all().prefetch_related("worker_set").order_by("name")
+        position_list = (
+            Position.objects.all().prefetch_related("worker_set").order_by("name")
+        )
 
         for position in position_list:
             position.count = Worker.objects.filter(position_id=position.id).count()
@@ -88,7 +108,6 @@ class WorkerCreateView(PermissionRequiredMixin, LoginRequiredMixin, generic.Crea
 class WorkerListView(PermissionRequiredMixin, LoginRequiredMixin, generic.ListView):
     model = get_user_model()
     permission_required = "task_manager.view_worker"
-    paginate_by = 10
 
     def get_context_data(self, *, object_list=None, **kwargs) -> Dict[str, Any]:
         context = super().get_context_data(**kwargs)
@@ -112,7 +131,7 @@ class WorkerDetailView(PermissionRequiredMixin, LoginRequiredMixin, generic.Deta
         task_sorting = Task.task_sorting(
             hide_completed=self.request.GET.get("hide_completed"),
             cookie_hide_completed=self.request.session.get("hide_completed"),
-            tasks=tasks
+            tasks=tasks,
         )
         self.request.session["hide_completed"] = task_sorting["cookie_hide_completed"]
 
@@ -140,7 +159,16 @@ class WorkerDeleteView(PermissionRequiredMixin, LoginRequiredMixin, generic.Dele
     success_url = reverse_lazy("task_manager:worker-list")
 
 
-class TaskTypeCreateView(PermissionRequiredMixin, LoginRequiredMixin, generic.CreateView):
+class WorkerChangePasswordView(PasswordChangeView):
+    template_name = "task_manager/change_password.html"
+
+    def get_success_url(self) -> str:
+        return reverse("task_manager:worker-detail", kwargs={"pk": self.kwargs["pk"]})
+
+
+class TaskTypeCreateView(
+    PermissionRequiredMixin, LoginRequiredMixin, generic.CreateView
+):
     model = TaskType
     permission_required = "task_manager.add_tasktype"
     fields = "__all__"
@@ -152,7 +180,9 @@ class TaskTypeCreateView(PermissionRequiredMixin, LoginRequiredMixin, generic.Cr
         return form
 
 
-class TaskTypeUpdateView(PermissionRequiredMixin, LoginRequiredMixin, generic.UpdateView):
+class TaskTypeUpdateView(
+    PermissionRequiredMixin, LoginRequiredMixin, generic.UpdateView
+):
     model = TaskType
     fields = "__all__"
     permission_required = "task_manager.change_tasktype"
@@ -164,7 +194,9 @@ class TaskTypeUpdateView(PermissionRequiredMixin, LoginRequiredMixin, generic.Up
         return form
 
 
-class TaskTypeDeleteView(PermissionRequiredMixin, LoginRequiredMixin, generic.DeleteView):
+class TaskTypeDeleteView(
+    PermissionRequiredMixin, LoginRequiredMixin, generic.DeleteView
+):
     model = TaskType
     permission_required = "task_manager.delete_tasktype"
     success_url = reverse_lazy("task_manager:task-type-list")
@@ -183,7 +215,9 @@ class TaskTypeListView(PermissionRequiredMixin, LoginRequiredMixin, generic.List
 
     def get_context_data(self, *args, **kwargs) -> Dict[str, Any]:
         context = super().get_context_data(*args, **kwargs)
-        tasktype_list = TaskType.objects.all().prefetch_related("task_set").order_by("name")
+        tasktype_list = (
+            TaskType.objects.all().prefetch_related("task_set").order_by("name")
+        )
 
         for tasktype in tasktype_list:
             tasktype.count = Task.objects.filter(task_type_id=tasktype.id).count()
@@ -236,11 +270,13 @@ class TaskUpdateView(generic.UpdateView):
         return form
 
     def get_success_url(self) -> str:
-        return reverse('task_manager:project-detail', kwargs={'pk': self.object.project.pk})
+        return reverse(
+            "task_manager:project-detail", kwargs={"pk": self.object.project.pk}
+        )
 
     def get_form_kwargs(self) -> Dict[str, Any]:
         kwargs = super().get_form_kwargs()
-        kwargs['project_id'] = self.object.project.id
+        kwargs["project_id"] = self.object.project.id
         return kwargs
 
 
@@ -249,7 +285,9 @@ class TaskDeleteView(PermissionRequiredMixin, LoginRequiredMixin, generic.Delete
     permission_required = "task_manager.delete_task"
 
     def get_success_url(self) -> str:
-        return reverse("task_manager:project-detail", kwargs={"pk": self.object.project.pk})
+        return reverse(
+            "task_manager:project-detail", kwargs={"pk": self.object.project.pk}
+        )
 
 
 class TaskCompleteView(View):
@@ -258,7 +296,9 @@ class TaskCompleteView(View):
         task = Task.objects.get(pk=pk)
         task.is_completed = True
         task.save()
-        return HttpResponseRedirect(reverse('task_manager:project-detail', args=[task.project.pk]))
+        return HttpResponseRedirect(
+            reverse("task_manager:project-detail", args=[task.project.pk])
+        )
 
 
 class TeamCreateView(PermissionRequiredMixin, LoginRequiredMixin, generic.CreateView):
@@ -275,7 +315,6 @@ class TeamCreateView(PermissionRequiredMixin, LoginRequiredMixin, generic.Create
 
 class TeamListView(PermissionRequiredMixin, LoginRequiredMixin, generic.ListView):
     model = Team
-    paginate_by = 5
     ordering = ["name"]
     permission_required = "task_manager.view_team"
 
@@ -321,7 +360,9 @@ class TeamDeleteView(PermissionRequiredMixin, LoginRequiredMixin, generic.Delete
     permission_required = "task_manager.delete_team"
 
 
-class ProjectCreateView(PermissionRequiredMixin, LoginRequiredMixin, generic.CreateView):
+class ProjectCreateView(
+    PermissionRequiredMixin, LoginRequiredMixin, generic.CreateView
+):
     model = Project
     form_class = ProjectForm
     permission_required = "task_manager.add_project"
@@ -336,11 +377,12 @@ class ProjectCreateView(PermissionRequiredMixin, LoginRequiredMixin, generic.Cre
 class ProjectListView(PermissionRequiredMixin, LoginRequiredMixin, generic.ListView):
     model = Project
     ordering = ["name"]
-    paginate_by = 5
     permission_required = "task_manager.view_project"
 
 
-class ProjectDetailView(PermissionRequiredMixin, LoginRequiredMixin, generic.DetailView):
+class ProjectDetailView(
+    PermissionRequiredMixin, LoginRequiredMixin, generic.DetailView
+):
     model = Project
     permission_required = "task_manager.view_project"
 
@@ -360,7 +402,9 @@ class ProjectDetailView(PermissionRequiredMixin, LoginRequiredMixin, generic.Det
         if hide_completed == "True":
             tasks = tasks.filter(is_completed=False)
 
-        is_member = kwargs["object"].team.filter(members__id=self.request.user.id).exists()
+        is_member = (
+            kwargs["object"].team.filter(members__id=self.request.user.id).exists()
+        )
 
         context["now"] = datetime.date.today()
         context["is_member"] = is_member
@@ -369,7 +413,9 @@ class ProjectDetailView(PermissionRequiredMixin, LoginRequiredMixin, generic.Det
         return context
 
 
-class ProjectUpdateView(PermissionRequiredMixin, LoginRequiredMixin, generic.UpdateView):
+class ProjectUpdateView(
+    PermissionRequiredMixin, LoginRequiredMixin, generic.UpdateView
+):
     model = Project
     form_class = ProjectForm
     permission_required = "task_manager.change_project"
@@ -383,7 +429,9 @@ class ProjectUpdateView(PermissionRequiredMixin, LoginRequiredMixin, generic.Upd
         return reverse("task_manager:project-detail", kwargs={"pk": self.object.pk})
 
 
-class ProjectDeleteView(PermissionRequiredMixin, LoginRequiredMixin, generic.DeleteView):
+class ProjectDeleteView(
+    PermissionRequiredMixin, LoginRequiredMixin, generic.DeleteView
+):
     model = Project
     permission_required = "task_manager.delete_project"
     success_url = reverse_lazy("task_manager:project-list")
