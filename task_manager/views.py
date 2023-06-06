@@ -80,19 +80,6 @@ class PositionListView(PermissionRequiredMixin, LoginRequiredMixin, generic.List
     permission_required = "task_manager.view_position"
     queryset = Position.objects.all().order_by("name")
 
-    def get_context_data(self, *args, **kwargs) -> Dict[str, Any]:
-        context = super().get_context_data(*args, **kwargs)
-        position_list = (
-            Position.objects.all().prefetch_related("worker_set").order_by("name")
-        )
-
-        for position in position_list:
-            position.count = Worker.objects.filter(position_id=position.id).count()
-
-        context["position_list"] = position_list
-
-        return context
-
 
 class WorkerCreateView(PermissionRequiredMixin, LoginRequiredMixin, generic.CreateView):
     model = Worker
@@ -108,15 +95,6 @@ class WorkerCreateView(PermissionRequiredMixin, LoginRequiredMixin, generic.Crea
 class WorkerListView(PermissionRequiredMixin, LoginRequiredMixin, generic.ListView):
     model = get_user_model()
     permission_required = "task_manager.view_worker"
-
-    def get_context_data(self, *, object_list=None, **kwargs) -> Dict[str, Any]:
-        context = super().get_context_data(**kwargs)
-        tl_ids = [team.team_lead_id for team in Team.objects.all()]
-        for worker in context["worker_list"]:
-            if worker.id in tl_ids:
-                worker.is_tl = True
-
-        return context
 
 
 class WorkerDetailView(PermissionRequiredMixin, LoginRequiredMixin, generic.DetailView):
@@ -213,19 +191,6 @@ class TaskTypeListView(PermissionRequiredMixin, LoginRequiredMixin, generic.List
     model = TaskType
     permission_required = "task_manager.view_tasktype"
 
-    def get_context_data(self, *args, **kwargs) -> Dict[str, Any]:
-        context = super().get_context_data(*args, **kwargs)
-        tasktype_list = (
-            TaskType.objects.all().prefetch_related("task_set").order_by("name")
-        )
-
-        for tasktype in tasktype_list:
-            tasktype.count = Task.objects.filter(task_type_id=tasktype.id).count()
-
-        context["tasktype_list"] = tasktype_list
-
-        return context
-
 
 class TaskCreateView(PermissionRequiredMixin, LoginRequiredMixin, generic.CreateView):
     model = Task
@@ -292,7 +257,7 @@ class TaskDeleteView(PermissionRequiredMixin, LoginRequiredMixin, generic.Delete
 
 class TaskCompleteView(View):
     @staticmethod
-    def get(request, pk) -> HttpResponseRedirect:
+    def post(request, pk) -> HttpResponseRedirect:
         task = Task.objects.get(pk=pk)
         task.is_completed = True
         task.save()
@@ -315,16 +280,8 @@ class TeamCreateView(PermissionRequiredMixin, LoginRequiredMixin, generic.Create
 
 class TeamListView(PermissionRequiredMixin, LoginRequiredMixin, generic.ListView):
     model = Team
-    ordering = ["name"]
+    queryset = Team.objects.all().prefetch_related("projects").order_by("name")
     permission_required = "task_manager.view_team"
-
-    def get_context_data(self, *, object_list=None, **kwargs) -> Dict[str, Any]:
-        context = super().get_context_data(**kwargs)
-        team_list = Team.objects.all().prefetch_related("projects").order_by("name")
-
-        context["team_list"] = team_list
-
-        return context
 
 
 class TeamDetailView(PermissionRequiredMixin, LoginRequiredMixin, generic.DetailView):
@@ -403,7 +360,7 @@ class ProjectDetailView(
             tasks = tasks.filter(is_completed=False)
 
         is_member = (
-            kwargs["object"].team.filter(members__id=self.request.user.id).exists()
+            kwargs["object"].teams.filter(members__id=self.request.user.id).exists()
         )
 
         context["now"] = datetime.date.today()

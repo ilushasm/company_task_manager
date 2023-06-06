@@ -77,8 +77,10 @@
                 <div>
                   {% if is_member or user|has_group:"Team Lead Group" %}
                     {% if not task.is_completed %}
-                      <a class="btn btn-outline-success text-dark m-1"
-                         href="{% url "task_manager:task-complete" pk=task.pk %}">Done</a>
+                      <form action="{% url 'task_manager:task-complete' pk=task.pk %}" method="post" class="d-inline">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-outline-success text-dark m-1">Done</button>
+                      </form>
                     {% endif %}
                   {% endif %}
                   {% if user|has_group:"Team Lead Group" %}

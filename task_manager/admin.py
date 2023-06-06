@@ -31,7 +31,6 @@ class WorkerAdmin(UserAdmin):
 @admin.register(Project)
 class ProjectAdmin(admin.ModelAdmin):
     search_fields = ("name",)
-    # list_filter = ("manufacturer",)
 
 
 @admin.register(Task)

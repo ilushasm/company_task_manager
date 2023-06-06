@@ -72,8 +72,8 @@ def get_team_form(form) -> forms.Form:
 def get_project_form(form) -> forms.Form:
     form.fields["name"].widget.attrs["class"] = "form-control form-group"
     form.fields["description"].widget.attrs["class"] = "form-control"
-    form.fields["team"].widget.attrs["class"] = "form-check-input"
-    form.fields["team"].widget.attrs["type"] = "checkbox"
+    form.fields["teams"].widget.attrs["class"] = "form-check-input"
+    form.fields["teams"].widget.attrs["type"] = "checkbox"
     return form
 
 

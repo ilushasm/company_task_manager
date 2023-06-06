@@ -21,12 +21,13 @@ class WorkerCreationForm(UserCreationForm):
             "gender",
         )
 
-    def save(self, commit=True) -> Worker:
-        worker = super().save(commit=False)
-        if commit:
-            worker.save()
-
-        return worker
+    # Without overriding save function, Worker creation form raises an Error
+    # def save(self, commit=True) -> Worker:
+    #     worker = super().save(commit=False)
+    #     if commit:
+    #         worker.save()
+    #
+    #     return worker
 
 
 class WorkerUpdateForm(forms.ModelForm):
@@ -86,7 +87,7 @@ class TeamFrom(forms.ModelForm):
 class ProjectForm(forms.ModelForm):
     class Meta:
         model = Project
-        fields = ["name", "description", "team"]
+        fields = ["name", "description", "teams"]
         widgets = {
-            "team": forms.CheckboxSelectMultiple(),
+            "teams": forms.CheckboxSelectMultiple(),
         }

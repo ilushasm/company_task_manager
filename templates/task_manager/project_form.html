@@ -41,9 +41,9 @@
 
                     {% for field in form %}
 
-                      {% if field.label == "Team" %}
-                        <label for="id_team">Choose one or several teams</label>
-                        {% for team in form.team %}
+                      {% if field.label == "Teams" %}
+                        <label for="id_teams">Choose one or several teams</label>
+                        {% for team in form.teams %}
                           <div class="form-check">
                             {{ team.tag }}
                             <label class="form-check-label" for="{{ team.id_for_label }}">

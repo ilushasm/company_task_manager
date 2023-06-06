@@ -1,8 +1,10 @@
 import random
+from typing import Optional
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AbstractUser, Group
 from django.db import models
+from django.db.models import QuerySet
 from django.urls import reverse
 
 
@@ -12,12 +14,20 @@ class TaskType(models.Model):
     def __str__(self) -> str:
         return self.name
 
+    @property
+    def tasktype_count(self) -> int:
+        return Task.objects.filter(task_type_id=self.id).count()
+
 
 class Position(models.Model):
     name = models.CharField(max_length=63)
 
     def __str__(self) -> str:
         return self.name
+
+    @property
+    def worker_count(self) -> int:
+        return get_user_model().objects.filter(position_id=self.id).count()
 
 
 class Worker(AbstractUser):
@@ -40,7 +50,7 @@ class Worker(AbstractUser):
     )
 
     position = models.ForeignKey(Position, on_delete=models.CASCADE)
-    groups = models.ManyToManyField(Group, default=1)
+    groups = models.ManyToManyField(Group, blank=True)
     avatar = models.CharField(max_length=13, blank=True)
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES, default="M")
     REQUIRED_FIELDS = ["position_id"]
@@ -63,11 +73,17 @@ class Worker(AbstractUser):
                 self.avatar = random.choice(self.FEMALE_AVATARS)
         super().save(*args, **kwargs)
 
+    def is_team_lead(self) -> bool:
+        if not hasattr(self, "_is_team_lead"):
+            tl_ids = set(team.team_lead_id for team in Team.objects.all())
+            self._is_team_lead = self.id in tl_ids
+        return self._is_team_lead
+
 
 class Team(models.Model):
     team_lead = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     name = models.CharField(max_length=63)
-    members = models.ManyToManyField(get_user_model(), related_name="teammates")
+    members = models.ManyToManyField(get_user_model(), related_name="teams")
 
     def __str__(self) -> str:
         return self.name
@@ -79,7 +95,7 @@ class Team(models.Model):
 class Project(models.Model):
     name = models.CharField(max_length=63)
     description = models.TextField(blank=True)
-    team = models.ManyToManyField(Team, related_name="projects", blank=True)
+    teams = models.ManyToManyField(Team, related_name="projects", blank=True)
 
     def __str__(self) -> str:
         return self.name
@@ -117,7 +133,7 @@ class Task(models.Model):
     )
 
     @classmethod
-    def sorting(cls, tasks, sort_by: str) -> object:
+    def sorting(cls, tasks: QuerySet, sort_by: str) -> object:
         if sort_by == "deadline":
             tasks = tasks.order_by("deadline", "is_completed")
         elif sort_by == "is_completed":
@@ -136,7 +152,11 @@ class Task(models.Model):
         return tasks
 
     @staticmethod
-    def task_sorting(hide_completed, cookie_hide_completed, tasks) -> dict:
+    def task_sorting(
+            hide_completed: Optional[str],
+            cookie_hide_completed: str,
+            tasks: QuerySet
+    ) -> dict:
         if hide_completed is None and cookie_hide_completed is not None:
             hide_completed = cookie_hide_completed
         elif hide_completed is not None and hide_completed != cookie_hide_completed:
