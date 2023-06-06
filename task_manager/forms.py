@@ -7,8 +7,8 @@ from task_manager.models import Worker, Task, Team, Project
 
 
 class WorkerCreationForm(UserCreationForm):
-    groups = forms.ModelChoiceField(
-        queryset=Group.objects.all(), widget=forms.RadioSelect, required=True
+    groups = forms.ModelMultipleChoiceField(
+        queryset=Group.objects.all(), widget=forms.CheckboxSelectMultiple, required=True
     )
 
     class Meta(UserCreationForm.Meta):
@@ -20,14 +20,6 @@ class WorkerCreationForm(UserCreationForm):
             "groups",
             "gender",
         )
-
-    # Without overriding save function, Worker creation form raises an Error
-    # def save(self, commit=True) -> Worker:
-    #     worker = super().save(commit=False)
-    #     if commit:
-    #         worker.save()
-    #
-    #     return worker
 
 
 class WorkerUpdateForm(forms.ModelForm):
