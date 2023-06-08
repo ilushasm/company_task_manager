@@ -8,7 +8,9 @@ from task_manager.models import Worker, Task, Team, Project
 
 class WorkerCreationForm(UserCreationForm):
     groups = forms.ModelMultipleChoiceField(
-        queryset=Group.objects.all(), widget=forms.CheckboxSelectMultiple, required=True
+        queryset=Group.objects.all(),
+        widget=forms.CheckboxSelectMultiple,
+        required=True
     )
 
     class Meta(UserCreationForm.Meta):
@@ -39,11 +41,13 @@ class TaskForm(forms.ModelForm):
     def __init__(self, *args, **kwargs) -> None:
         project_id = kwargs.pop("project_id")
         super().__init__(*args, **kwargs)
-        id_list = Team.objects.filter(projects__id=project_id).values_list(
+        members = Team.objects.filter(projects__id=project_id).values_list(
             "members", flat=True
         )
-        queryset_two = get_user_model().objects.filter(id__in=list(id_list))
-        self.fields["assignees"].queryset = queryset_two
+        workers_on_project = get_user_model().objects.filter(
+            id__in=list(members)
+        )
+        self.fields["assignees"].queryset = workers_on_project
 
     class Meta:
         model = Task

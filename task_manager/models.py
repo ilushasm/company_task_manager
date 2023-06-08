@@ -16,7 +16,8 @@ class TaskType(models.Model):
 
     @property
     def tasktype_count(self) -> int:
-        return Task.objects.filter(task_type_id=self.id).count()
+        # return Task.objects.filter(task_type_id=self.id).count()
+        return self.tasks.count()
 
 
 class Position(models.Model):
@@ -27,7 +28,8 @@ class Position(models.Model):
 
     @property
     def worker_count(self) -> int:
-        return get_user_model().objects.filter(position_id=self.id).count()
+        # return get_user_model().objects.filter(position_id=self.id).count()
+        return self.workers.count()
 
 
 class Worker(AbstractUser):
@@ -49,10 +51,18 @@ class Worker(AbstractUser):
         ("F", "Female"),
     )
 
-    position = models.ForeignKey(Position, on_delete=models.CASCADE)
+    position = models.ForeignKey(
+        Position,
+        on_delete=models.CASCADE,
+        related_name="workers"
+    )
     groups = models.ManyToManyField(Group, blank=True)
     avatar = models.CharField(max_length=13, blank=True)
-    gender = models.CharField(max_length=1, choices=GENDER_CHOICES, default="M")
+    gender = models.CharField(
+        max_length=1,
+        choices=GENDER_CHOICES,
+        default="M"
+    )
     REQUIRED_FIELDS = ["position_id"]
 
     class Meta:
@@ -65,7 +75,7 @@ class Worker(AbstractUser):
     def get_absolute_url(self) -> str:
         return reverse("task_manager:worker-detail", args=[str(self.id)])
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, **kwargs) -> None:
         if not self.avatar:
             if self.gender == "M":
                 self.avatar = random.choice(self.MALE_AVATARS)
@@ -126,17 +136,37 @@ class Task(models.Model):
     deadline = models.DateField()
     is_completed = models.BooleanField(default=False)
     priority = models.CharField(max_length=255, choices=PRIORITY_CHOICES)
-    task_type = models.ForeignKey(TaskType, on_delete=models.CASCADE)
-    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name="tasks")
+    task_type = models.ForeignKey(
+        TaskType,
+        on_delete=models.CASCADE,
+        related_name="tasks"
+    )
+    project = models.ForeignKey(
+        Project,
+        on_delete=models.CASCADE,
+        related_name="tasks"
+    )
     assignees = models.ManyToManyField(
         get_user_model(), related_name="assigned", blank=True
     )
 
-    @classmethod
-    def sorting(cls, tasks: QuerySet, sort_by: str) -> object:
+    @staticmethod
+    def task_sorting(
+            hide_completed: Optional[str],
+            cookie_hide_completed: str,
+            sort_by: str,
+            tasks: QuerySet
+    ) -> dict:
+        if hide_completed is None and cookie_hide_completed is not None:
+            hide_completed = cookie_hide_completed
+        elif hide_completed is not None \
+                and hide_completed != cookie_hide_completed:
+            cookie_hide_completed = hide_completed
+
+        if hide_completed == "True":
+            tasks = tasks.filter(is_completed=False)
+
         if sort_by == "deadline":
-            tasks = tasks.order_by("deadline", "is_completed")
-        elif sort_by == "is_completed":
             tasks = tasks.order_by("deadline", "is_completed")
         elif sort_by == "priority":
             tasks = tasks.order_by(
@@ -149,21 +179,6 @@ class Task(models.Model):
                     output_field=models.IntegerField(),
                 )
             )
-        return tasks
-
-    @staticmethod
-    def task_sorting(
-            hide_completed: Optional[str],
-            cookie_hide_completed: str,
-            tasks: QuerySet
-    ) -> dict:
-        if hide_completed is None and cookie_hide_completed is not None:
-            hide_completed = cookie_hide_completed
-        elif hide_completed is not None and hide_completed != cookie_hide_completed:
-            cookie_hide_completed = hide_completed
-
-        if hide_completed == "True":
-            tasks = tasks.filter(is_completed=False)
 
         return {
             "sorted_tasks": tasks,
