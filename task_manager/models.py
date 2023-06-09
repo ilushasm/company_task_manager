@@ -85,8 +85,7 @@ class Worker(AbstractUser):
 
     def is_team_lead(self) -> bool:
         if not hasattr(self, "_is_team_lead"):
-            tl_ids = set(team.team_lead_id for team in Team.objects.all())
-            self._is_team_lead = self.id in tl_ids
+            self._is_team_lead = Team.objects.filter(team_lead_id=self.id).exists()
         return self._is_team_lead
 
 
