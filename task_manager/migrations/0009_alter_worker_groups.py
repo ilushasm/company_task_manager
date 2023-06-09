@@ -6,7 +6,10 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
     dependencies = [
         ("auth", "0012_alter_user_first_name_max_length"),
-        ("task_manager", "0008_alter_position_options_alter_project_options_and_more"),
+        (
+            "task_manager",
+            "0008_alter_position_options_alter_project_options_and_more"
+        ),
     ]
 
     operations = [

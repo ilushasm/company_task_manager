@@ -85,7 +85,9 @@ class Worker(AbstractUser):
 
     def is_team_lead(self) -> bool:
         if not hasattr(self, "_is_team_lead"):
-            self._is_team_lead = Team.objects.filter(team_lead_id=self.id).exists()
+            self._is_team_lead = Team.objects.filter(
+                team_lead_id=self.id
+            ).exists()
         return self._is_team_lead
 
 
@@ -158,8 +160,10 @@ class Task(models.Model):
     ) -> dict:
         if hide_completed is None and cookie_hide_completed is not None:
             hide_completed = cookie_hide_completed
-        elif hide_completed is not None \
-                and hide_completed != cookie_hide_completed:
+        elif (
+                hide_completed is not None
+                and hide_completed != cookie_hide_completed
+        ):
             cookie_hide_completed = hide_completed
 
         if hide_completed == "True":

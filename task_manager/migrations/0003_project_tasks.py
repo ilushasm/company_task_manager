@@ -5,7 +5,10 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("task_manager", "0002_alter_project_options_alter_team_options_and_more"),
+        (
+            "task_manager",
+            "0002_alter_project_options_alter_team_options_and_more"
+        ),
     ]
 
     operations = [

@@ -27,6 +27,9 @@ class Migration(migrations.Migration):
         ),
         migrations.AlterModelOptions(
             name="worker",
-            options={"verbose_name": "worker", "verbose_name_plural": "workers"},
+            options={
+                "verbose_name": "worker",
+                "verbose_name_plural": "workers"
+            },
         ),
     ]

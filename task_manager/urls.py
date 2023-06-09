@@ -84,7 +84,11 @@ urlpatterns = [
         WorkerChangePasswordView.as_view(),
         name="change-password",
     ),
-    path("tasktype-create/", TaskTypeCreateView.as_view(), name="task-type-create"),
+    path(
+        "tasktype-create/",
+        TaskTypeCreateView.as_view(),
+        name="task-type-create"
+    ),
     path(
         "tasktype-list/",
         TaskTypeListView.as_view(),
@@ -100,23 +104,58 @@ urlpatterns = [
         TaskTypeDeleteView.as_view(),
         name="task-type-delete",
     ),
-    path("task-create/<int:project_id>/", TaskCreateView.as_view(), name="task-create"),
-    path("task-update/<int:pk>/", TaskUpdateView.as_view(), name="task-update"),
-    path("task-delete/<int:pk>/", TaskDeleteView.as_view(), name="task-delete"),
-    path("task-complete/<int:pk>/", TaskCompleteView.as_view(), name="task-complete"),
+    path(
+        "task-create/<int:project_id>/",
+        TaskCreateView.as_view(),
+        name="task-create"
+    ),
+    path(
+        "task-update/<int:pk>/",
+        TaskUpdateView.as_view(),
+        name="task-update"
+    ),
+    path(
+        "task-delete/<int:pk>/",
+        TaskDeleteView.as_view(),
+        name="task-delete"
+    ),
+    path(
+        "task-complete/<int:pk>/",
+        TaskCompleteView.as_view(),
+        name="task-complete"
+    ),
     path("team-create/", TeamCreateView.as_view(), name="team-create"),
     path("team-list/", TeamListView.as_view(), name="team-list"),
     path("team/<int:pk>/", TeamDetailView.as_view(), name="team-detail"),
-    path("team-update/<int:pk>/", TeamUpdateView.as_view(), name="team-update"),
-    path("team-delete/<int:pk>/", TeamDeleteView.as_view(), name="team-delete"),
-    path("project-create/", ProjectCreateView.as_view(), name="project-create"),
-    path("project-list/", ProjectListView.as_view(), name="project-list"),
-    path("project/<int:pk>/", ProjectDetailView.as_view(), name="project-detail"),
     path(
-        "project-update/<int:pk>/", ProjectUpdateView.as_view(), name="project-update"
+        "team-update/<int:pk>/",
+        TeamUpdateView.as_view(),
+        name="team-update"
     ),
     path(
-        "project-delete/<int:pk>/", ProjectDeleteView.as_view(), name="project-delete"
+        "team-delete/<int:pk>/",
+        TeamDeleteView.as_view(),
+        name="team-delete"
+    ),
+    path(
+        "project-create/",
+        ProjectCreateView.as_view(),
+        name="project-create"
+    ),
+    path("project-list/", ProjectListView.as_view(), name="project-list"),
+    path(
+        "project/<int:pk>/",
+        ProjectDetailView.as_view(),
+        name="project-detail"),
+    path(
+        "project-update/<int:pk>/",
+        ProjectUpdateView.as_view(),
+        name="project-update"
+    ),
+    path(
+        "project-delete/<int:pk>/",
+        ProjectDeleteView.as_view(),
+        name="project-delete"
     ),
 ]
 

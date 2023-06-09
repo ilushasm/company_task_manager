@@ -4,8 +4,8 @@ from django.db import migrations
 
 
 def create_groups_and_permissions(apps, schema_editor) -> None:
-    group = apps.get_model('auth', 'Group')
-    permission = apps.get_model('auth', 'Permission')
+    group = apps.get_model("auth", "Group")
+    permission = apps.get_model("auth", "Permission")
 
     # Creates Basic Group
     basic_group, _ = group.objects.get_or_create(name="Basic Group")

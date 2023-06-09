@@ -18,7 +18,10 @@ class Migration(migrations.Migration):
             model_name="worker",
             name="gender",
             field=models.CharField(
-                choices=[("M", "Male"), ("F", "Female")], default="M", max_length=1
+                choices=[
+                    ("M", "Male"),
+                    ("F", "Female")
+                ], default="M", max_length=1
             ),
         ),
     ]
