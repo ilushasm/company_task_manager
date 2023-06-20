@@ -4,7 +4,7 @@ A simple Task manager that allows to track progress of projects.
 
 ## Check it out
 
-[Company Task Manager deployed to Render](SHOULD_INSERT_LINK)
+[Company Task Manager deployed to Render](https://company-task-manger.onrender.com)
 
 
 ## Installation
