@@ -29,3 +29,17 @@ python manage.py runserver # Starts Django server
 ## Demo
 
 ![Web-site interface](demo.png)
+
+
+You can use user's below to access the app:
+
+Basic Group user:
+```shell
+username: basic_user
+password: user12345
+```
+Team Lead Group user:
+```shell
+username: tl_user
+password: user12345
+```
