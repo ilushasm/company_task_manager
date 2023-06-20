@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% load custom_filters %}
+{% load static %}
+
+{% block title %}
+  <title>Worker list</title>
+{% endblock %}
+
+{% block content %}
+  <div class="container-fluid py-4">
+    <div class="row">
+      <div class="col-12">
+
+        <div class="card mb-4">
+
+          <div class="card-header pb-0">
+            <div class="d-flex justify-content-between">
+              <div>
+                <h4>All employees</h4>
+              </div>
+              <div>
+                {% if user|has_group:"Team Lead Group" %}
+                  <a class="btn my-bg-primary" href="{% url "task_manager:worker-create" %}">Add employee account</a>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+          <div class="card-body px-0 pt-0 pb-2">
+            <div class="table-responsive p-0">
+              <table class="table align-items-center mb-0">
+
+                <thead>
+                  <tr>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Name</th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Position</th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">More</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+
+                  {% for worker in worker_list %}
+                    <tr>
+
+                      <td>
+                        <div class="d-flex px-2 py-1">
+                          <div>
+                            <img src="/static/img/{{ worker.avatar }}" class="avatar avatar-sm me-3" alt="user1">
+                          </div>
+                          <div class="d-flex flex-column justify-content-center">
+                            <h6 class="mb-0 text-sm">{{ worker.first_name }} {{ worker.last_name }}</h6>
+                            <p class="text-xs text-secondary mb-0">@{{ worker.username }}</p>
+                          </div>
+                        </div>
+                      </td>
+
+                      <td>
+                        <p class="text-xs font-weight-bold mb-0">{{ worker.position }}</p>
+                        {% if worker.is_team_lead %}
+                          <p class="text-xs text-secondary mb-0">Team lead</p>
+                        {% endif %}
+                      </td>
+
+                      <td>
+                          <a class="m-0 btn btn-link px-0"
+                             href="{% url "task_manager:worker-detail" pk=worker.pk%}">Details</a>
+                      </td>
+                      <td>
+
+                      </td>
+
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

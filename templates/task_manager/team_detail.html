@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+{% load static %}
+{% load custom_filters %}
+
+{% block title %}
+  <title>{{ team.name }}</title>
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid py-4">
+  <div class="card mb-4">
+          <div class="card-header pb-0">
+            <div class="d-flex justify-content-between">
+              <div>
+                <h5>{{ team.name }}</h5>
+              </div>
+              {% if user|has_group:"Team Lead Group" %}
+                <div>
+                  <a class="btn my-bg-secondary" href="{% url "task_manager:team-update" pk=team.pk %}">Edit team</a>
+                </div>
+              {% endif %}
+            </div>
+          </div>
+            {% if team.projects.all %}
+              <div class="card-body px-0 pt-0 pb-2">
+                <div class="table-responsive p-0">
+                  <table class="table align-items-center justify-content-center mb-0">
+                    <thead>
+                      <tr>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Project</th>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                          Completion
+                        </th>
+                      </tr>
+                    </thead>
+
+                    <tbody>
+
+                      {% for project in team.projects.all %}
+
+                        <tr>
+
+                          <td>
+                            <div class="d-flex px-2">
+                              <div class="my-auto">
+                                <h6 class="mb-0 text-sm">{{ project.name }}</h6>
+                              </div>
+                            </div>
+                          </td>
+
+                          <td class="align-middle text-center">
+                            <div class="d-flex">
+                              <span class="me-2 text-xs font-weight-bold">{{ project.get_percentage }}%</span>
+                              <div
+                                  class="progress-bar bg-gradient-{% if project.get_percentage < 30 %}danger
+                                  {% elif project.get_percentage < 70 %}info{% else %}success
+                                  {% endif %}"
+                                  role="progressbar" aria-valuenow="{{ project.get_percentage }}"
+                                  aria-valuemin="0" aria-valuemax="100" style="width: {{ project.get_percentage }}%;">
+                              </div>
+                            </div>
+                          </td>
+
+                        </tr>
+
+                      {% endfor %}
+
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+            {% else %}
+
+            <div class="card-body px-0 pt-0 pb-2">
+              <div class="d-flex flex-column align-items-start mx-4">
+                <h6 class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                  No projects yet
+                </h6>
+              </div>
+            </div>
+
+          {% endif %}
+
+        </div>
+</div>
+
+<div class="container-fluid py-4">
+  <div class="row">
+    <div class="col-12">
+      <div class="card mb-4">
+        <div class="card-header pb-0">
+          <h6>Members</h6>
+        </div>
+        <div class="card-body px-0 pt-0 pb-2">
+          <div class="table-responsive p-0">
+            <table class="table align-items-center mb-0">
+              <thead>
+                <tr>
+                  <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Name</th>
+                  <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Position</th>
+                  <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Number of Tasks</th>
+                  <th class="text-secondary opacity-7"></th>
+                </tr>
+              </thead>
+
+              <tbody>
+
+                {% for member in members_list %}
+                  <tr>
+
+                    <td>
+                      <div class="d-flex px-2 py-1">
+                        <div>
+                          <img src="/static/img/{{ member.avatar }}" class="avatar avatar-sm me-3" alt="user1">
+                        </div>
+                        <div class="d-flex flex-column justify-content-center">
+                          <h6 class="mb-0 text-sm">{{ member.first_name }} {{ member.last_name }}</h6>
+                          <p class="text-xs text-secondary mb-0">@{{ member.username }}</p>
+                        </div>
+                      </div>
+                    </td>
+
+                    <td>
+                      <p class="text-xs font-weight-bold mb-0">{{ member.position }}</p>
+                      {% if team.team_lead == member %}
+                        <p class="text-xs text-secondary mb-0">Team lead</p>
+                      {% endif %}
+                    </td>
+
+                    <td>
+                        <p class="text-xs font-weight-bold mb-0">{{ member.task_count }}</p>
+                    </td>
+                    <td>
+
+                    </td>
+
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}

@@ -1,0 +1,39 @@
+{% load custom_filters %}
+{% load static %}
+
+<nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl" id="navbarBlur" navbar-scroll="true">
+  <div class="container-fluid py-1 px-3">
+    <nav aria-label="breadcrumb">
+    </nav>
+    <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
+      <div class="ms-md-auto pe-md-3 d-flex align-items-center">
+        {% if user|has_group:"Team Lead Group" %}
+          <div class="dropdown p-2 text-bold">
+            <a class="btn my-btn-outline-primary" href="#">Open Team Lead Tools</a>
+            <div class="dropdown-content flex-column text-center" style="border: 1px solid lightgrey">
+              <a href="{% url "task_manager:position-list" %}"
+                 class="text-normal dropdown-option" style="border-bottom: 1px solid lightgrey">Manage Positions</a>
+              <a href="{% url "task_manager:task-type-list" %}"
+                 class="text-normal dropdown-option" style="border-bottom: 1px solid lightgrey">Manage Task Types</a>
+              <a href="{% url "task_manager:team-create" %}"
+                 class="text-normal dropdown-option" style="border-bottom: 1px solid lightgrey">Add new Team</a>
+              <a href="{% url "task_manager:project-create" %}" class="text-normal dropdown-option">Add new Project</a>
+            </div>
+          </div>
+        {% endif %}
+      </div>
+      <ul class="navbar-nav  justify-content-end">
+        {% if request.user.is_authenticated %}
+          <li class="nav-item d-flex align-items-center p-2">
+            <a href="{% url "task_manager:worker-detail" pk=user.id %}"
+              class="btn my-bg-gradient-primary">My profile</a>
+          </li>
+          <li class="nav-item d-flex align-items-center p-2">
+            <a href="{% url "logout" %}" class="btn my-bg-gradient-primary">Logout</a>
+          {% else %}
+            <a href="{% url "login" %}" class="btn my-bg-gradient-primary">Login</a>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+</nav>

@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+{% load static %}
+{% load custom_filters %}
+
+{% block title %}
+  <title>{{ worker.username }}</title>
+{% endblock %}
+
+{% block content %}
+  <div class="container-fluid py-4">
+    <div class="card mb-4 pb-3">
+      <div class="card-header pb-0">
+        <div class="d-flex justify-content-between">
+          <div class="px-1" style="width: 50%;">
+            <div class="d-flex">
+              <div>
+                <img src="/static/img/{{ worker.avatar }}" class="avatar avatar-xl me-3 m-2" alt="user1">
+              </div>
+              <div class="flex-column mx-3">
+                <h3>{{ worker.first_name }} {{ worker.last_name }}</h3>
+                <p>@{{ worker.username }}</p>
+              </div>
+            </div>
+            <p>
+              <a href="{% url "task_manager:worker-detail" pk=worker.pk %}?sort_by=deadline"
+                class="btn btn-link pe-3 ps-0 mb-0 ms-auto">
+                Sort by deadline
+              </a>
+              <a href="{% url "task_manager:worker-detail" pk=worker.pk %}?sort_by=priority"
+                class="btn btn-link pe-3 ps-0 mb-0 ms-auto">
+                Sort by priority
+              </a>
+              {% if hide_completed == "True" %}
+                <a href="{% url "task_manager:worker-detail" pk=worker.pk %}?hide_completed=False"
+                  class="btn btn-link pe-3 ps-0 mb-0 ms-auto">
+                  Show completed
+                </a>
+                {% else %}
+                <a href="{% url "task_manager:worker-detail" pk=worker.pk %}?hide_completed=True"
+                  class="btn btn-link pe-3 ps-0 mb-0 ms-auto">
+                  Hide completed
+                </a>
+              {% endif %}
+
+            </p>
+          </div>
+          <div class="d-flex">
+            {% if user.id == worker.pk %}
+              <div class="px-1">
+                <a class="btn my-btn-outline-primary" href="{% url "task_manager:change-password" pk=worker.pk %}">Change password</a>
+              </div>
+            {% endif %}
+            {% if user|has_group:"Team Lead Group" %}
+              <div class="px-1">
+                <a class="btn my-bg-primary" href="{% url "task_manager:worker-update" pk=worker.pk %}">Edit account</a>
+              </div>
+              <div class="px-1">
+                <a class="btn my-bg-danger"
+                   href="{% url "task_manager:worker-delete" pk=worker.pk %}">Delete account</a>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      {% if tasks %}
+        {% for task in tasks %}
+          <div class="card-body py-2 px-4">
+            <ul class="list-group">
+            <li class="list-group-item border-0 flex-column p-4 m-0 bg-gray-100 border-radius-lg" style="min-height: 150px;">
+              <div class="d-flex justify-content-between align-items-center">
+                <h5 class="">{{ task.name }} {% if task.is_completed %}✅
+                  {% elif task.deadline < now %}‼️
+                  {% else %}▶️
+                  {% endif %}
+                </h5>
+                <div>
+                  {% if user.id == worker.id and not task.is_completed%}
+                    <a class="btn btn-outline-success text-dark m-1"
+                       href="{% url "task_manager:task-complete" pk=task.pk %}">Done</a>
+                  {% endif %}
+                  {% if user|has_group:"Team Lead Group" %}
+                    <a class="btn btn-outline-danger text-danger text-gradient m-1"
+                       href="{% url "task_manager:task-delete" pk=task.pk %}">Delete</a>
+                    <a class="btn my-btn-outline-primary text-dark m-1"
+                       href="{% url "task_manager:task-update" pk=task.pk %}">Edit</a>
+                  {% endif %}
+                </div>
+              </div>
+              <div class="d-flex">
+                <div class="flex-column">
+                  <div class="mb-2 text-s">Type: <span class="text-dark font-weight-bold ms-sm-2">{{ task.task_type }}</span></div>
+                  <div class="mb-2 text-s">Deadline: <span class="text-dark ms-sm-2 font-weight-bold">{{ task.deadline }}
+                  </span></div>
+                  <div class="mb-2 text-s">Priority: <span class="text-dark ms-sm-2 font-weight-bold">{{ task.priority }}</span></div>
+                </div>
+                <div class="flex-column mx-5">
+                  <div class="mb-2 text-s">Assigned to this task: <span class="text-dark ms-sm-2 font-weight-bold">
+                    {% if task.assignees.all %}
+                      {{ task.assignees.all|join:", " }}
+                      {% else %}
+                      No one
+                    {% endif %}</span></div>
+                  <div class="mb-2 text-s">Description: <span class="text-dark ms-sm-2 font-weight-bold">{{ task.description }}</span></div>
+                </div>
+              </div>
+            </li>
+
+          </ul>
+        </div>
+        {% endfor %}
+
+            {% else %}
+
+            <div class="card-body px-0 pt-3 pb-2">
+              <div class="d-flex flex-column align-items-start mx-4">
+                <h6 class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                  No tasks yet
+                </h6>
+              </div>
+            </div>
+
+          {% endif %}
+
+        </div>
+  </div>
+
+{% endblock %}

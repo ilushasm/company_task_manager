@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% load custom_filters %}
+{% load static %}
+
+{% block title %}
+  <title>
+    {% if tasktype %}
+      Update task type
+      {% else %}
+      Create task type
+    {% endif %}
+  </title>
+{% endblock %}
+
+{% block content %}
+  <main class="main-content  mt-0">
+    <section>
+      <div class="page-header min-vh-25">
+        <div class="container">
+          <div class="row">
+            <div class="col-xl-4 col-lg-5 col-md-6 d-flex flex-column mx-auto">
+              <div class="card card-plain mt-8">
+
+                <div class="card-header pb-0 text-left bg-transparent">
+                  <h3 class="font-weight-bolder my-primary-font">
+                    {% if tasktype %}
+                      Update task type
+                      {% else %}
+                      Create task type
+                    {% endif %}
+                  </h3>
+                </div>
+
+                <div class="card-body">
+                  <form role="form" method="post" action="#">
+                    {% csrf_token %}
+
+                    {% if form.non_field_errors %}
+                      {% for error in form.non_field_errors %}
+                        <span class="text-danger">{{ error }}</span>
+                      {% endfor %}
+                    {% endif %}
+
+                    {% for field in form %}
+                      <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                      <div class="mb-3">
+                        {{field}}
+                      </div>
+                    {% endfor %}
+
+                    <div class="text-center">
+                      <button type="submit" class="btn my-bg-primary w-100 mt-1 mb-0">
+                        {% if tasktype %}
+                          Update
+                          {% else %}
+                          Create
+                        {% endif %}
+                      </button>
+                    </div>
+                  </form>
+                </div>
+
+              </div>
+            </div>
+
+            <div class="col-md-6 mt-8">
+              {% if tasktype %}
+                <div class="card mb-4 h-25 text-center justify-content-center">
+                  <h6>Change will affect all tasks with this task type</h6>
+                </div>
+              {% endif %}
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+{% endblock content %}

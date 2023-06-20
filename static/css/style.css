@@ -1,0 +1,114 @@
+:root {
+--primary-color: #5F7161;
+--secondary-color: #6D8B74;
+--background-color: #D0C9C0;
+--background-gradient-color: #A9907E;
+}
+
+.my-background-color {
+  background-color: #EFEAD8;
+}
+
+.my-bg-gradient-primary,
+.my-bg-gradient-primary:hover {
+  background-image: linear-gradient(310deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+  color: white;
+}
+
+.my-primary-font {
+  color: var(--primary-color);
+}
+
+.my-bg-gradient-secondary {
+  background-image: linear-gradient(310deg, var(--background-gradient-color) 0%, var(--background-color) 100%);
+}
+
+.my-bg-primary,
+.my-bg-primary:hover {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.my-bg-danger,
+.my-bg-danger:hover {
+  background-color: #D73027;
+  color: white;
+}
+
+.my-bg-secondary {
+  background-color: var(--secondary-color);
+  color: white;
+}
+.my-bg-secondary:hover {
+  background-color: var(--secondary-color);
+  color: white;
+}
+
+.my-sidebar-icon {
+  background-color: var(--primary-color);
+  width: 2rem;
+  height: 2rem;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  border-radius: 0.75rem;
+  display: flex;
+}
+
+/*.my-btn {*/
+/*  transition: transform 0.5s;*/
+/*  text-align: center;*/
+/*  padding: 0.75rem 1.5rem;*/
+/*  border-radius: 0.5rem;*/
+/*  color: white;*/
+/*  box-shadow: 0.2rem 0.2rem 0.5rem rgba(0, 0, 0, 0.2);*/
+/*}*/
+
+/*.my-btn:hover {*/
+/*  transform: scale(1.03);*/
+/*  color: white;*/
+/*}*/
+
+/*.btn-secondary:hover,*/
+/*.btn.bg-gradient-secondary:hover {*/
+/*  background-color: #8392AB;*/
+/*  border-color: #8392AB;*/
+
+.my-btn-outline-primary {
+  /*background-color: transparent;*/
+  /*transition: transform 0.5s;*/
+  border: 0.1rem solid var(--primary-color);
+  color: var(--primary-color);
+  box-shadow: none;
+}
+
+.my-btn-outline-primary:hover {
+  color: var(--primary-color);
+  box-shadow: none;
+  /*transform: scale(1.03);*/
+}
+
+.bg-gradient-info {
+  background-image: linear-gradient(310deg, #2152ff 0%, #21d4fd 100%); }
+.bg-gradient-danger {
+  background-image: linear-gradient(310deg, #ea0606 0%, #ff667c 100%); }
+.bg-gradient-success {
+  background-image: linear-gradient(310deg, #17ad37 0%, #98ec2d 100%); }
+
+.my-btn-link {
+  font-weight: 400;
+  color: var(--secondary-color);
+  background: transparent;
+  border-color: transparent;
+  /*--bs-btn-hover-color: #830866;*/
+  /*--bs-btn-hover-border-color: transparent;*/
+  /*--bs-btn-active-border-color: transparent;*/
+  /*--bs-btn-disabled-color: #6c757d;*/
+  /*--bs-btn-disabled-border-color: transparent;*/
+  /*--bs-btn-box-shadow: none;*/
+  text-decoration: none;
+}
+.btn-link:hover, .btn-link:focus {
+  text-decoration: none;
+  color: var(--primary-color);
+}

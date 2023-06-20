@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+  <title>Confirm deletion</title>
+{% endblock %}
+
+{% block content %}
+
+  <main class="main-content  mt-0">
+    <section>
+      <div class="page-header min-vh-25">
+        <div class="container">
+          <div class="row">
+            <div class="col-xl-4 col-lg-5 col-md-6 d-flex flex-column mx-auto">
+              <div class="card card-plain mt-8">
+
+                <div class="card-header pb-0 text-center bg-transparent">
+                  <h3 class="font-weight-bolder my-primary-font">
+                    Are you sure you want to delete task "{{ task.name }}"?
+                  </h3>
+                </div>
+
+                <div class="card-body">
+                  <form role="form" method="post" action="#">
+                    {% csrf_token %}
+
+                    <div class="text-center">
+                      <button type="submit"
+                         class="btn my-bg-danger w-100 mt-1 mb-0">
+                        Yes, delete
+                      </button>
+                    </div>
+
+                    <div class="text-center">
+                      <a href="{% url "task_manager:project-detail" pk=task.project.id %}"
+                         class="btn my-bg-gradient-primary w-100 mt-1 mb-0">
+                        No, go back to the project
+                      </a>
+                    </div>
+
+                  </form>
+                </div>
+
+              </div>
+            </div>
+            <div class="col-md-6 mt-8">
+          </div>
+        </div>
+      </div>
+      </div>
+    </section>
+  </main>
+
+{% endblock %}
