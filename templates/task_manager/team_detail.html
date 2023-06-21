@@ -41,15 +41,15 @@
 
                         <tr>
 
-                          <td>
-                            <div class="d-flex px-2">
+                          <td style="width: 50%">
+                            <div class="d-flex px-3">
                               <div class="my-auto">
                                 <h6 class="mb-0 text-sm">{{ project.name }}</h6>
                               </div>
                             </div>
                           </td>
 
-                          <td class="align-middle text-center">
+                          <td class="align-middle text-center" style="width: 50%">
                             <div class="d-flex">
                               <span class="me-2 text-xs font-weight-bold">{{ project.get_percentage }}%</span>
                               <div
@@ -110,7 +110,7 @@
                 {% for member in members_list %}
                   <tr>
 
-                    <td>
+                    <td style="width: 40%">
                       <div class="d-flex px-2 py-1">
                         <div>
                           <img src="/static/img/{{ member.avatar }}" class="avatar avatar-sm me-3" alt="user1">
@@ -122,14 +122,14 @@
                       </div>
                     </td>
 
-                    <td>
+                    <td style="width: 40%">
                       <p class="text-xs font-weight-bold mb-0">{{ member.position }}</p>
                       {% if team.team_lead == member %}
                         <p class="text-xs text-secondary mb-0">Team lead</p>
                       {% endif %}
                     </td>
 
-                    <td>
+                    <td style="width: 20%">
                         <p class="text-xs font-weight-bold mb-0">{{ member.task_count }}</p>
                     </td>
                     <td>
