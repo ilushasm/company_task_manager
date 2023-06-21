@@ -1,15 +1,17 @@
 from typing import Any, Dict
 
 from django.contrib.auth import get_user_model
+from django.contrib import messages
 from django.contrib.auth.mixins import (
     LoginRequiredMixin,
-    PermissionRequiredMixin
+    PermissionRequiredMixin,
+    UserPassesTestMixin
 )
 from django.contrib.auth.views import PasswordChangeView
 from django.db.models import Count
 from django.forms import forms
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.urls import reverse_lazy, reverse
 from django.views import generic, View
 from django.views.generic.edit import FormMixin
@@ -168,12 +170,17 @@ class WorkerDeleteView(
 
 
 class WorkerChangePasswordView(
-    PermissionRequiredMixin,
     LoginRequiredMixin,
-    PasswordChangeView
+    UserPassesTestMixin,
+    PasswordChangeView,
 ):
-    permission_required = "task_manager.change_worker"
     template_name = "task_manager/change_password.html"
+
+    def test_func(self) -> bool:
+        if self.request.user.groups.filter(name="Team Lead Group").exists():
+            return self.request.user.groups.filter(name="Team Lead Group").exists()
+        else:
+            return self.request.user.pk == int(self.kwargs["pk"])
 
     def get_success_url(self) -> str:
         return reverse(

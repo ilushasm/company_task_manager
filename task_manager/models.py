@@ -16,7 +16,6 @@ class TaskType(models.Model):
 
     @property
     def tasktype_count(self) -> int:
-        # return Task.objects.filter(task_type_id=self.id).count()
         return self.tasks.count()
 
 
@@ -28,7 +27,6 @@ class Position(models.Model):
 
     @property
     def worker_count(self) -> int:
-        # return get_user_model().objects.filter(position_id=self.id).count()
         return self.workers.count()
 
 
