@@ -68,7 +68,7 @@ class Worker(AbstractUser):
         verbose_name_plural = "workers"
 
     def __str__(self) -> str:
-        return f"{self.first_name} {self.last_name} ({self.username})"
+        return f"{self.first_name} {self.last_name} (@{self.username})"
 
     def get_absolute_url(self) -> str:
         return reverse("task_manager:worker-detail", args=[str(self.id)])

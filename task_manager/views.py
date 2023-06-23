@@ -1,7 +1,6 @@
 from typing import Any, Dict
 
 from django.contrib.auth import get_user_model
-from django.contrib import messages
 from django.contrib.auth.mixins import (
     LoginRequiredMixin,
     PermissionRequiredMixin,
@@ -11,7 +10,7 @@ from django.contrib.auth.views import PasswordChangeView
 from django.db.models import Count
 from django.forms import forms
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render
 from django.urls import reverse_lazy, reverse
 from django.views import generic, View
 from django.views.generic.edit import FormMixin
@@ -26,7 +25,6 @@ from task_manager.forms import (
 )
 from task_manager.models import (
     Position,
-    Worker,
     TaskType,
     Task,
     Team,
@@ -96,7 +94,7 @@ class PositionDeleteView(
     def get_context_data(self, **kwargs) -> Dict[str, Any]:
         context = super().get_context_data(**kwargs)
 
-        workers = Worker.objects.filter(position=kwargs["object"])
+        workers = get_user_model().objects.filter(position=kwargs["object"])
         context["workers"] = workers
         return context
 
@@ -117,7 +115,7 @@ class WorkerCreateView(
     GetFormMixin,
     generic.CreateView
 ):
-    model = Worker
+    model = get_user_model()
     form_class = WorkerCreationForm
     permission_required = "task_manager.add_worker"
 
@@ -136,7 +134,7 @@ class WorkerDetailView(
     LoginRequiredMixin,
     generic.DetailView
 ):
-    model = Worker
+    model = get_user_model()
     permission_required = "task_manager.view_worker"
 
     def get_context_data(self, **kwargs) -> Dict[str, Any]:
@@ -154,7 +152,7 @@ class WorkerUpdateView(
     GetFormMixin,
     generic.UpdateView
 ):
-    model = Worker
+    model = get_user_model()
     form_class = WorkerUpdateForm
     permission_required = "task_manager.change_worker"
 
@@ -164,7 +162,7 @@ class WorkerDeleteView(
     LoginRequiredMixin,
     generic.DeleteView
 ):
-    model = Worker
+    model = get_user_model()
     permission_required = "task_manager.delete_worker"
     success_url = reverse_lazy("task_manager:worker-list")
 
@@ -178,7 +176,9 @@ class WorkerChangePasswordView(
 
     def test_func(self) -> bool:
         if self.request.user.groups.filter(name="Team Lead Group").exists():
-            return self.request.user.groups.filter(name="Team Lead Group").exists()
+            return self.request.user.groups.filter(
+                name="Team Lead Group"
+            ).exists()
         else:
             return self.request.user.pk == int(self.kwargs["pk"])
 
